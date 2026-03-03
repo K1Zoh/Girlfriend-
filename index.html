@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>📝 T'as reçu un mot…</title>
+
+  <style>
+    :root {
+      --bg1: #fde8d8;
+      --bg2: #f9c5a7;
+      --accent: #ff4f81;
+      --accent2: #ff8fab;
+      --blue: #3b82f6;
+      --blue2: #60a5fa;
+      --paper: #fffef5;
+      --lines: #d4eaf7;
+      --text: #2d1a0e;
+      --shadow: 0 20px 60px rgba(60, 0, 30, .22);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Apple Color Emoji";
+      color: var(--text);
+      background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
+      overflow: hidden;
+    }
+
+    /* ── Floating hearts ─────────────────────────── */
+    .hearts { position: fixed; inset: 0; pointer-events: none; opacity: .28; }
+    .heart {
+      position: absolute;
+      font-size: clamp(16px, 2vw, 28px);
+      animation: floatUp linear infinite;
+      user-select: none;
+    }
+    @keyframes floatUp {
+      from { transform: translateY(110vh); opacity: 0; }
+      10%  { opacity: 1; }
+      to   { transform: translateY(-20vh); opacity: 0; }
+    }
+
+    /* ── Confetti canvas ─────────────────────────── */
+    canvas#confetti { position: fixed; inset: 0; pointer-events: none; display: none; }
+    canvas#confetti.show { display: block; }
+
+    /* ── Pages ───────────────────────────────────── */
+    .page { display: none; }
+    .page.active { display: flex; justify-content: center; align-items: center; min-height: 100svh; }
+    .fade-in { animation: fadeIn .35s ease-out both; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── PAGE 1 : La note ────────────────────────── */
+    .note-scene {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .note {
+      width: min(320px, 86vw);
+      background: var(--paper);
+      background-image: repeating-linear-gradient(
+        transparent, transparent 27px,
+        var(--lines) 27px, var(--lines) 28.5px
+      );
+      background-position: 0 36px;
+      border-radius: 3px;
+      padding: 28px 24px 32px;
+      box-shadow:
+        2px 3px 0 rgba(0,0,0,.07),
+        6px 8px 0 rgba(0,0,0,.04),
+        10px 18px 40px rgba(0,0,0,.18);
+      position: relative;
+      transform: rotate(-1.8deg);
+      cursor: pointer;
+      transition: transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .note:hover, .note:focus-visible {
+      transform: rotate(0deg) scale(1.03);
+      box-shadow:
+        2px 3px 0 rgba(0,0,0,.07),
+        10px 16px 50px rgba(0,0,0,.22);
+      outline: none;
+    }
+
+    /* marge rouge de cahier */
+    .note::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 36px;
+      width: 1.5px; height: 100%;
+      background: rgba(255, 80, 110, .35);
+    }
+
+    /* coin plié */
+    .note-corner {
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 26px; height: 26px;
+      background: linear-gradient(135deg, transparent 50%, rgba(0,0,0,.10) 50%);
+    }
+
+    .note-to {
+      font-size: 11px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      opacity: .45;
+      margin-bottom: 16px;
+      padding-left: 44px;
+    }
+
+    .note-body {
+      padding-left: 44px;
+      font-size: 15px;
+      line-height: 28px;
+      font-style: italic;
+    }
+
+    .note-hint {
+      font-size: 13px;
+      opacity: .65;
+      background: rgba(255,255,255,.55);
+      padding: 8px 18px;
+      border-radius: 99px;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,.7);
+    }
+
+    /* ── Boutons génériques ───────────────────────── */
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 13px 24px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: .3px;
+      box-shadow: 0 10px 28px rgba(0,0,0,.16);
+      transition: transform .12s, filter .12s, box-shadow .12s;
+      user-select: none;
+      touch-action: manipulation;
+    }
+    .btn:active { transform: scale(.97); }
+
+    .btn-pink {
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: 3px solid rgba(255,255,255,.85);
+      text-shadow: 0 1px 0 rgba(0,0,0,.12);
+      box-shadow: 0 14px 34px rgba(255,79,129,.28), 0 8px 20px rgba(0,0,0,.12);
+    }
+    .btn-pink:hover { filter: brightness(1.07); }
+
+    .btn-blue {
+      background: linear-gradient(180deg, var(--blue), var(--blue2));
+      color: #fff;
+      border: 3px solid rgba(255,255,255,.85);
+      text-shadow: 0 1px 0 rgba(0,0,0,.12);
+      box-shadow: 0 14px 34px rgba(59,130,246,.28), 0 8px 20px rgba(0,0,0,.12);
+    }
+    .btn-blue:hover { filter: brightness(1.07); }
+
+    /* ── PAGE 2 : Question ───────────────────────── */
+    .card {
+      width: min(580px, 92vw);
+      background: linear-gradient(180deg, #fffef5, #fff5f0);
+      border-radius: 28px;
+      border: 3px solid rgba(255,255,255,.88);
+      box-shadow: var(--shadow);
+      padding: clamp(20px, 4vw, 36px);
+    }
+
+    .card-label {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      opacity: .45;
+      margin-bottom: 10px;
+    }
+
+    .card-question {
+      font-size: clamp(17px, 3vw, 22px);
+      font-weight: 900;
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+
+    .card-sub {
+      font-size: clamp(12px, 1.8vw, 14px);
+      opacity: .55;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    /* arena */
+    .arena {
+      position: relative;
+      height: clamp(200px, 32vw, 260px);
+      border-radius: 20px;
+      background: rgba(255,255,255,.58);
+      border: 2px solid rgba(255,255,255,.9);
+      box-shadow: inset 0 0 0 6px rgba(255,255,255,.22);
+      overflow: hidden;
+    }
+
+    /* positions initiales — remplacées en px dès le 1er dodge */
+    #btnOui {
+      position: absolute;
+      left: 50%; top: 44%;
+      transform: translate(-120%, -50%);
+      font-size: 15px;
+    }
+
+    #btnNon {
+      position: absolute;
+      left: 55%; top: 44%;
+      transform: translate(8%, -50%);
+      /* style discret */
+      background: rgba(200,200,200,.45);
+      color: #888;
+      border: 2px dashed rgba(150,150,150,.4);
+      font-size: 11px;
+      padding: 9px 14px;
+      line-height: 1.3;
+      max-width: 160px;
+      text-align: center;
+    }
+
+    #btnOuiBleu {
+      position: absolute;
+      left: 50%; top: 78%;
+      transform: translate(-50%, -50%);
+      font-size: 14px;
+    }
+
+    .arena-hint {
+      text-align: center;
+      font-size: 11px;
+      opacity: .45;
+      margin-top: 10px;
+    }
+
+    /* OUI grandit + wiggle */
+    #btnOui.wiggle {
+      animation: wiggleOui .22s ease-in-out infinite alternate;
+    }
+    @keyframes wiggleOui {
+      from { transform: translate(-120%, -50%) scale(var(--ys, 1)) rotate(-1.2deg); }
+      to   { transform: translate(-120%, -50%) scale(var(--ys, 1)) rotate( 1.2deg); }
+    }
+
+    /* ── Toast ───────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(70px);
+      background: rgba(25, 8, 8, .85);
+      color: #fff;
+      padding: 11px 22px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      transition: transform .28s cubic-bezier(.34,1.56,.64,1), opacity .28s ease;
+      pointer-events: none;
+      white-space: nowrap;
+      backdrop-filter: blur(8px);
+      z-index: 10;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* ── Overlay success ─────────────────────────── */
+    .overlay {
+      position: fixed; inset: 0;
+      display: none;
+      place-items: center;
+      background: rgba(20, 0, 12, .48);
+      backdrop-filter: blur(9px);
+      padding: 18px;
+      z-index: 20;
+    }
+    .overlay.show { display: grid; }
+
+    .modal {
+      width: min(460px, 92vw);
+      background: linear-gradient(180deg, #fffef5, #fff0f5);
+      border-radius: 28px;
+      border: 3px solid rgba(255,255,255,.92);
+      box-shadow: var(--shadow);
+      padding: clamp(24px, 4vw, 36px);
+      text-align: center;
+    }
+    .modal h2 {
+      font-size: clamp(22px, 4vw, 34px);
+      margin-bottom: 12px;
+    }
+    .modal p {
+      font-size: clamp(14px, 2vw, 17px);
+      line-height: 1.55;
+      opacity: .88;
+      margin-bottom: 8px;
+    }
+    .modal .small { font-size: 13px; opacity: .6; }
+  </style>
+</head>
+
+<body>
+
+  <canvas id="confetti"></canvas>
+  <div class="hearts" id="hearts" aria-hidden="true"></div>
+  <div class="toast" id="toast"></div>
+
+  <!-- ══════════════════════════════════════════════
+       PAGE 1 — Le mot plié
+  ══════════════════════════════════════════════ -->
+  <div class="page active" id="pageNote">
+    <div class="note-scene fade-in">
+
+      <div class="note" id="note" role="button" tabindex="0" aria-label="Ouvrir le mot">
+        <div class="note-corner"></div>
+        <div class="note-to">Pour toi 🖊️</div>
+        <div class="note-body">
+          Je t'envoie<br>
+          un petit mot<br>
+          comme à l'école…<br><br>
+          <em>Ouvre-le 👀</em>
+        </div>
+      </div>
+
+      <span class="note-hint">✏️ Clique pour ouvrir</span>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       PAGE 2 — La question
+  ══════════════════════════════════════════════ -->
+  <div class="page" id="pageQuestion">
+    <div class="card fade-in">
+
+      <p class="card-label">📝 Le fameux petit mot…</p>
+      <p class="card-question">Veux-tu être ma petite copine ?</p>
+      <p class="card-sub">(j'ai plus envie d'être ton pote de fac)</p>
+
+      <div class="arena" id="arena">
+        <button class="btn btn-pink" id="btnOui" type="button">
+          OUI je n'attends que ça 💖
+        </button>
+
+        <button class="btn" id="btnNon" type="button">
+          NON je pense que tu es mieux en camarade de classe fictif
+        </button>
+
+        <button class="btn btn-blue" id="btnOuiBleu" type="button">
+          OUI mais en bleu
+        </button>
+      </div>
+
+      <p class="arena-hint">✏️ Essaie le NON… si tu y arrives 😌</p>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       OVERLAY — Succès
+  ══════════════════════════════════════════════ -->
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h2 id="modalTitle">Donc c'est OUI alors !!!! 🥹</h2>
+      <p>Ok c'est officiel maintenant.</p>
+      <p class="small">J'espère t'avoir fait sourire au moins ❤️</p>
+      <button class="btn btn-pink" id="btnClose" style="margin-top:16px" type="button">🥰</button>
+    </div>
+  </div>
+
+  <script>
+    // ── Helpers ──────────────────────────────────
+    function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
+
+    // ── Pages ────────────────────────────────────
+    const pageNote     = document.getElementById('pageNote');
+    const pageQuestion = document.getElementById('pageQuestion');
+    const note         = document.getElementById('note');
+
+    function openQuestion() {
+      pageNote.classList.remove('active');
+      pageQuestion.classList.add('active', 'fade-in');
+      setTimeout(() => document.getElementById('btnOui').focus(), 80);
+    }
+
+    note.addEventListener('click', openQuestion);
+    note.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openQuestion(); }
+    });
+
+    // ── Floating hearts ───────────────────────────
+    const heartsEl   = document.getElementById('hearts');
+    const heartChars = ['💖','💘','💝','💗','✨','❤️','🌸','💕'];
+
+    function makeHeart() {
+      const h = document.createElement('div');
+      h.className = 'heart';
+      h.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
+      h.style.left = Math.random() * 100 + 'vw';
+      const dur = 7 + Math.random() * 9;
+      h.style.animationDuration = dur + 's';
+      h.style.animationDelay   = Math.random() * 2 + 's';
+      heartsEl.appendChild(h);
+      setTimeout(() => h.remove(), (dur + 2) * 1000);
+    }
+    for (let i = 0; i < 16; i++) makeHeart();
+    setInterval(makeHeart, 480);
+
+    // ── Arena buttons ─────────────────────────────
+    const arena      = document.getElementById('arena');
+    const btnOui     = document.getElementById('btnOui');
+    const btnNon     = document.getElementById('btnNon');
+    const btnOuiBleu = document.getElementById('btnOuiBleu');
+    const overlay    = document.getElementById('overlay');
+    const toast      = document.getElementById('toast');
+
+    // ── Toast ─────────────────────────────────────
+    const toastMessages = [
+      'Essaie encore… 😌',
+      'Erreur 404 : NON introuvable',
+      'Le NON est en vacances 🏖️',
+      'Non c\'est non, le NON fuit… 😇',
+      'T\'as pas réussi ? Bizarre…',
+      'Pas disponible, réessaie jamais 😘',
+      'Ce bouton préfère pas trop ça 🙃',
+      'Fascinant. Il a encore bougé.',
+    ];
+    let toastIdx = 0;
+    let toastTimer;
+
+    function showToast() {
+      toast.textContent = toastMessages[Math.min(toastIdx++, toastMessages.length - 1)];
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+    }
+
+    // ── NON dodge ─────────────────────────────────
+    let dodgeCount   = 0;
+    let yesScale     = 1;
+    let nonAnchored  = false; // converti en px ?
+
+    function anchorNon() {
+      if (nonAnchored) return;
+      const a = arena.getBoundingClientRect();
+      const n = btnNon.getBoundingClientRect();
+      btnNon.style.left      = (n.left - a.left) + 'px';
+      btnNon.style.top       = (n.top  - a.top)  + 'px';
+      btnNon.style.transform = 'none';
+      nonAnchored = true;
+    }
+
+    function dodgeNon() {
+      anchorNon();
+      dodgeCount++;
+
+      // NON rétrécit
+      const nonScale = clamp(1 - dodgeCount * 0.07, 0.3, 1);
+      const fontSize = Math.max(8, 11 - dodgeCount) + 'px';
+
+      // nouvelle position aléatoire dans l'arena
+      const a    = arena.getBoundingClientRect();
+      const nW   = btnNon.offsetWidth  * nonScale;
+      const nH   = btnNon.offsetHeight * nonScale;
+      const pad  = 8;
+      const maxX = a.width  - nW  - pad * 2;
+      const maxY = a.height - nH  - pad * 2;
+
+      const newX = pad + Math.random() * Math.max(0, maxX);
+      const newY = pad + Math.random() * Math.max(0, maxY);
+
+      btnNon.style.left           = newX + 'px';
+      btnNon.style.top            = newY + 'px';
+      btnNon.style.transform      = `scale(${nonScale})`;
+      btnNon.style.transformOrigin = 'top left';
+      btnNon.style.fontSize       = fontSize;
+
+      // OUI grossit
+      yesScale = clamp(1 + dodgeCount * 0.08, 1, 2.4);
+      btnOui.style.setProperty('--ys', yesScale.toFixed(2));
+
+      if (!btnOui.classList.contains('wiggle')) {
+        btnOui.style.transform = `translate(-120%, -50%) scale(${yesScale})`;
+      }
+      if (yesScale > 1.45) btnOui.classList.add('wiggle');
+
+      showToast();
+    }
+
+    btnNon.addEventListener('mouseenter', dodgeNon);
+    btnNon.addEventListener('touchstart', e => { e.preventDefault(); dodgeNon(); }, { passive: false });
+    btnNon.addEventListener('click',      e => { e.preventDefault(); dodgeNon(); });
+
+    // ── Confetti ──────────────────────────────────
+    const confettiEl = document.getElementById('confetti');
+    const ctx        = confettiEl.getContext('2d');
+    let   particles  = [];
+    let   animId     = null;
+
+    function resizeCanvas() {
+      confettiEl.width  = window.innerWidth  * devicePixelRatio;
+      confettiEl.height = window.innerHeight * devicePixelRatio;
+      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function spawnConfetti(isBlue) {
+      particles = [];
+      const w = window.innerWidth, h = window.innerHeight;
+      const colors = isBlue
+        ? ['rgba(59,130,246,.9)',  'rgba(147,197,253,.9)']
+        : ['rgba(255,79,129,.9)', 'rgba(255,143,171,.9)'];
+      for (let i = 0; i < 210; i++) {
+        particles.push({
+          x:     Math.random() * w,
+          y:    -20 - Math.random() * h * .2,
+          vx:   (Math.random() - .5) * 3,
+          vy:    2.4 + Math.random() * 4.8,
+          r:     8 + Math.random() * 19,
+          rot:   Math.random() * Math.PI * 2,
+          vr:   (Math.random() - .5) * .22,
+          a:     1,
+          color: colors[Math.floor(Math.random() * 2)],
+        });
+      }
+    }
+
+    function drawHeart(x, y, size, rot, color) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rot);
+      ctx.scale(size / 30, size / 30);
+      ctx.beginPath();
+      ctx.moveTo(0, 10);
+      ctx.bezierCurveTo(0, -10, -30, -10, -30, 10);
+      ctx.bezierCurveTo(-30, 30, 0, 40, 0, 55);
+      ctx.bezierCurveTo(0, 40, 30, 30, 30, 10);
+      ctx.bezierCurveTo(30, -10, 0, -10, 0, 10);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function confettiLoop() {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      for (const p of particles) {
+        p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.a -= .004;
+        ctx.globalAlpha = Math.max(0, p.a);
+        drawHeart(p.x, p.y, p.r, p.rot, p.color);
+      }
+      ctx.globalAlpha = 1;
+      particles = particles.filter(p => p.a > 0 && p.y < window.innerHeight + 80);
+      if (particles.length) {
+        animId = requestAnimationFrame(confettiLoop);
+      } else {
+        confettiEl.classList.remove('show');
+        animId = null;
+      }
+    }
+
+    // ── OUI handlers ──────────────────────────────
+    function handleOui(isBlue) {
+      const title = document.getElementById('modalTitle');
+      title.textContent = isBlue
+        ? 'Donc c\'est OUI (en bleu) alors !!!! 💙'
+        : 'Donc c\'est OUI alors !!!! 🥹';
+
+      overlay.classList.add('show');
+      confettiEl.classList.add('show');
+      spawnConfetti(isBlue);
+      if (!animId) confettiLoop();
+
+      for (let i = 0; i < 14; i++) setTimeout(makeHeart, i * 75);
+    }
+
+    btnOui.addEventListener('click',     () => handleOui(false));
+    btnOuiBleu.addEventListener('click', () => handleOui(true));
+
+    // ── Overlay close ─────────────────────────────
+    document.getElementById('btnClose').addEventListener('click', () => {
+      overlay.classList.remove('show');
+    });
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) overlay.classList.remove('show');
+    });
+  </script>
+
+</body>
+</html>
