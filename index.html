@@ -3,186 +3,147 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>📬 Lucie — Convocation d'examen</title>
+  <title>📬 Lucie — Convocation urgente</title>
   <style>
     :root {
-      --bg1: #fde8d8;
-      --bg2: #f0c4a8;
-      --paper: #fdfcf4;
-      --ink: #1c1c2e;
-      --red: #c0392b;
-      --blue: #2563eb;
-      --blue2: #60a5fa;
-      --pink: #ff4f81;
-      --pink2: #ff8fab;
-      --lines: #d4eaf7;
-      --green: #15803d;
+      --bg1: #fde8d8; --bg2: #f0c4a8;
+      --paper: #fdfcf4; --ink: #1c1c2e;
+      --red: #c0392b; --blue: #2563eb; --blue2: #60a5fa;
+      --pink: #ff4f81; --pink2: #ff8fab;
+      --green: #15803d; --lines: #d4eaf7;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
-      min-height: 100svh;
-      display: grid;
-      place-items: center;
-      font-family: "Georgia", ui-serif, serif;
-      color: var(--ink);
-      background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
+      min-height: 100svh; display: grid; place-items: center;
+      font-family: "Georgia", ui-serif, serif; color: var(--ink);
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
       overflow-x: hidden;
     }
 
-    /* ── Floating hearts ──────────────────────── */
-    .hearts { position: fixed; inset: 0; pointer-events: none; opacity: .25; }
-    .heart { position: absolute; font-size: clamp(14px, 2vw, 24px); animation: floatUp linear infinite; user-select: none; }
+    /* ── Hearts ─────────────────────────────────── */
+    .hearts { position: fixed; inset: 0; pointer-events: none; opacity: .22; }
+    .heart { position: absolute; animation: floatUp linear infinite; user-select: none; font-size: clamp(14px,2vw,22px); }
     @keyframes floatUp {
       from { transform: translateY(110vh); opacity: 0; }
       10%  { opacity: 1; }
       to   { transform: translateY(-20vh); opacity: 0; }
     }
 
-    /* ── Confetti ─────────────────────────────── */
+    /* ── Confetti ────────────────────────────────── */
     canvas#confetti { position: fixed; inset: 0; pointer-events: none; display: none; }
     canvas#confetti.show { display: block; }
 
-    /* ── Toast ───────────────────────────────── */
+    /* ── Toast ───────────────────────────────────── */
     .toast {
-      position: fixed; bottom: 28px; left: 50%;
-      transform: translateX(-50%) translateY(70px);
-      background: rgba(20, 5, 5, .88);
-      color: #fff; padding: 11px 22px; border-radius: 99px;
-      font-size: 13px; font-family: ui-sans-serif, system-ui, sans-serif;
-      font-weight: 600; opacity: 0;
-      transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .3s;
-      pointer-events: none; white-space: nowrap;
-      backdrop-filter: blur(8px); z-index: 50;
+      position: fixed; bottom: 26px; left: 50%;
+      transform: translateX(-50%) translateY(66px);
+      background: rgba(18,4,4,.9); color: #fff;
+      padding: 10px 22px; border-radius: 99px;
+      font-size: 13px; font-family: ui-sans-serif, sans-serif; font-weight: 600;
+      opacity: 0; transition: transform .32s cubic-bezier(.34,1.56,.64,1), opacity .28s;
+      pointer-events: none; white-space: nowrap; backdrop-filter: blur(8px); z-index: 50;
     }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-    /* ── Pages ───────────────────────────────── */
+    /* ── Sound btn ───────────────────────────────── */
+    .sound-btn {
+      position: fixed; top: 14px; right: 14px;
+      background: rgba(255,255,255,.5); border: 1px solid rgba(255,255,255,.7);
+      border-radius: 99px; padding: 6px 12px; font-size: 15px;
+      cursor: pointer; backdrop-filter: blur(6px); z-index: 40;
+      transition: background .2s; font-family: ui-sans-serif, sans-serif;
+    }
+    .sound-btn:hover { background: rgba(255,255,255,.75); }
+
+    /* ── Pages ───────────────────────────────────── */
     .page { display: none; }
     .page.active { display: flex; justify-content: center; align-items: center; min-height: 100svh; padding: 20px; }
-    .fade-in { animation: fadeIn .4s ease-out both; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(14px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
 
     /* ══════════════════════════════════════════════
        PAGE 1 — Enveloppe
     ══════════════════════════════════════════════ */
     .env-scene { display: flex; flex-direction: column; align-items: center; gap: 26px; }
-
-    /* Perspective wrapper for 3D flap */
-    .env-perspective {
-      perspective: 1400px;
-      perspective-origin: 50% -15%;
-    }
+    .env-perspective { perspective: 1400px; perspective-origin: 50% -15%; }
 
     .envelope {
-      width: min(350px, 88vw);
-      height: min(230px, 58vw);
-      position: relative;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      transition: filter .2s;
+      width: min(360px, 88vw); height: min(230px, 58vw);
+      position: relative; cursor: pointer; -webkit-tap-highlight-color: transparent;
     }
-    .envelope:hover { filter: drop-shadow(0 18px 40px rgba(0,0,0,.22)); }
-
-    /* Envelope body */
     .env-body {
       position: absolute; inset: 0;
-      background: linear-gradient(165deg, #fdfcf4 0%, #f0ead6 100%);
+      background: linear-gradient(165deg, #fdfcf4, #f0ead6);
       border-radius: 4px;
       box-shadow: 0 4px 14px rgba(0,0,0,.12), 0 16px 44px rgba(0,0,0,.18);
       overflow: hidden;
     }
-    /* inner V-fold lines */
     .env-body::before {
       content: ''; position: absolute; bottom: 0; left: -5%;
-      width: 60%; height: 1.5px;
-      background: rgba(0,0,0,.09); transform-origin: bottom left; transform: rotate(-38deg);
+      width: 60%; height: 1.5px; background: rgba(0,0,0,.08);
+      transform-origin: bottom left; transform: rotate(-38deg);
     }
     .env-body::after {
       content: ''; position: absolute; bottom: 0; right: -5%;
-      width: 60%; height: 1.5px;
-      background: rgba(0,0,0,.09); transform-origin: bottom right; transform: rotate(38deg);
+      width: 60%; height: 1.5px; background: rgba(0,0,0,.08);
+      transform-origin: bottom right; transform: rotate(38deg);
     }
-
     .env-address {
-      position: absolute; bottom: 30px; left: 0; right: 0;
-      text-align: center; font-size: clamp(13px, 2.8vw, 17px);
-      font-style: italic; opacity: .65;
+      position: absolute; bottom: 28px; left: 0; right: 0;
+      text-align: center; font-size: clamp(13px, 2.8vw, 17px); font-style: italic; opacity: .65;
     }
-
-    /* Flap — triangle pointing down, folds backward on open */
     .env-flap {
-      position: absolute; top: -1px; left: -1px; right: -1px;
-      height: 52%;
+      position: absolute; top: -1px; left: -1px; right: -1px; height: 52%;
       clip-path: polygon(0 0, 100% 0, 50% 100%);
-      background: linear-gradient(170deg, #f5f0e0 0%, #e8e0c6 100%);
-      border-radius: 4px 4px 0 0;
-      transform-origin: top center;
-      transform: rotateX(0deg);
-      transition: transform .75s cubic-bezier(.4, 0, .2, 1);
-      z-index: 2;
+      background: linear-gradient(170deg, #f5f0e0, #e8e0c6);
+      border-radius: 4px 4px 0 0; z-index: 2;
     }
-    .envelope.open .env-flap { transform: rotateX(-178deg); }
-
-    /* Wax seal */
     .env-seal {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
       width: 58px; height: 58px;
       background: radial-gradient(circle at 35% 35%, #ff6fa0, #c0003c);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
       font-size: 24px;
       box-shadow: 0 4px 14px rgba(192,0,60,.35), 0 1px 4px rgba(0,0,0,.2);
-      border: 2.5px solid rgba(255,255,255,.35);
-      z-index: 3;
-      transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .25s;
+      border: 2.5px solid rgba(255,255,255,.35); z-index: 3;
     }
-    .envelope:hover .env-seal { transform: translate(-50%, -50%) scale(1.07); }
-    .envelope.open .env-seal {
-      transform: translate(-50%, -50%) scale(1.6);
-      opacity: 0;
-      transition: transform .22s ease-in, opacity .18s ease-in;
-    }
-
     .env-hint {
-      font-size: 13px; opacity: .62;
+      font-size: 13px; opacity: 0;
       background: rgba(255,255,255,.55); padding: 9px 20px;
       border-radius: 99px; backdrop-filter: blur(6px);
-      border: 1px solid rgba(255,255,255,.65);
-      font-family: ui-sans-serif, system-ui, sans-serif;
+      border: 1px solid rgba(255,255,255,.65); font-family: ui-sans-serif, sans-serif;
     }
 
     /* ══════════════════════════════════════════════
-       PAGE 2 — Feuille d'examen
+       PAGE 2 — Chargement
+    ══════════════════════════════════════════════ */
+    .loading-paper {
+      width: min(360px, 88vw);
+      background: var(--paper); border-radius: 3px;
+      padding: clamp(24px,5vw,36px);
+      box-shadow: 0 20px 50px rgba(0,0,0,.18); text-align: center;
+    }
+    .loading-uni { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; opacity: .38; margin-bottom: 20px; font-family: ui-sans-serif, sans-serif; }
+    .loading-icon { font-size: 40px; margin-bottom: 14px; display: block; }
+    .loading-title { font-size: 16px; font-weight: 700; margin-bottom: 20px; }
+    .loading-bar-wrap { height: 6px; background: rgba(0,0,0,.08); border-radius: 99px; overflow: hidden; margin-bottom: 12px; }
+    .loading-bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--pink), var(--pink2)); border-radius: 99px; }
+    .loading-msg { font-size: 12px; font-style: italic; opacity: .55; font-family: ui-sans-serif, sans-serif; min-height: 18px; }
+
+    /* ══════════════════════════════════════════════
+       PAGE 3 — Examen
     ══════════════════════════════════════════════ */
     .exam-wrap { width: min(610px, 92vw); }
-
     .exam-paper {
-      background: var(--paper);
-      border-radius: 3px;
-      padding: clamp(20px, 5vw, 40px);
+      background: var(--paper); border-radius: 3px;
+      padding: clamp(20px,5vw,40px);
       box-shadow: 0 1px 0 rgba(0,0,0,.06), 0 4px 10px rgba(0,0,0,.08), 0 22px 60px rgba(0,0,0,.2);
-      position: relative;
-      overflow: visible; /* allows antisèche to poke out */
+      position: relative; overflow: visible;
     }
-
-    /* Watermark */
     .exam-paper::before {
-      content: 'CONFIDENTIEL';
-      position: absolute; top: 52%; left: 50%;
+      content: 'CONFIDENTIEL'; position: absolute; top: 52%; left: 50%;
       transform: translate(-50%, -50%) rotate(-28deg);
-      font-size: clamp(24px, 5.5vw, 48px);
-      font-weight: 900; letter-spacing: 8px;
-      color: rgba(192, 57, 43, .045);
-      pointer-events: none; user-select: none; white-space: nowrap;
+      font-size: clamp(24px,5.5vw,48px); font-weight: 900; letter-spacing: 8px;
+      color: rgba(192,57,43,.042); pointer-events: none; user-select: none; white-space: nowrap;
     }
-
-    /* ── Header ───────────────────────────────── */
     .exam-header {
       display: flex; align-items: center; gap: 14px;
       padding-bottom: 14px; border-bottom: 2.5px solid var(--ink); margin-bottom: 14px;
@@ -193,12 +154,9 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 22px; color: #7a0000; position: relative;
     }
-    .exam-seal::after {
-      content: ''; position: absolute; inset: 4px;
-      border: 1.5px dashed #7a0000; border-radius: 50%; opacity: .45;
-    }
+    .exam-seal::after { content: ''; position: absolute; inset: 4px; border: 1.5px dashed #7a0000; border-radius: 50%; opacity: .45; }
     .exam-title { flex: 1; }
-    .exam-title strong { display: block; font-size: clamp(12px, 2.2vw, 14.5px); letter-spacing: .6px; text-transform: uppercase; }
+    .exam-title strong { display: block; font-size: clamp(12px,2.2vw,14.5px); letter-spacing: .6px; text-transform: uppercase; }
     .exam-title span { font-size: 11px; opacity: .5; font-style: italic; }
     .photo-box {
       width: 52px; height: 64px; flex-shrink: 0;
@@ -207,93 +165,54 @@
       font-size: 9px; opacity: .38; text-align: center; line-height: 1.4;
       font-family: ui-sans-serif, sans-serif;
     }
-
-    /* ── Meta ─────────────────────────────────── */
-    .exam-meta {
-      display: flex; flex-wrap: wrap; gap: 6px 20px;
-      font-size: 11.5px; margin-bottom: 12px;
-      font-family: ui-sans-serif, system-ui, sans-serif;
-    }
+    .exam-meta { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 11.5px; margin-bottom: 12px; font-family: ui-sans-serif, sans-serif; }
     .field { display: flex; gap: 5px; align-items: baseline; }
     .field-label { opacity: .5; }
     .field-val { font-weight: 700; border-bottom: 1px solid rgba(0,0,0,.22); padding: 0 4px; min-width: 60px; }
-
     hr.sep { border: none; border-top: 1px solid rgba(0,0,0,.14); margin: 10px 0 14px; }
 
-    /* ── Rappel important ─────────────────────── */
-    .rappel {
-      border: 1.5px solid var(--ink); border-radius: 2px;
-      padding: 10px 14px; margin-bottom: 16px;
-      font-family: ui-sans-serif, system-ui, sans-serif; font-size: 11px;
-      position: relative;
-    }
-    .rappel-title {
-      position: absolute; top: -9px; left: 12px;
-      background: var(--paper); padding: 0 6px;
-      font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
-    }
+    .rappel { border: 1.5px solid var(--ink); border-radius: 2px; padding: 10px 14px; margin-bottom: 16px; font-family: ui-sans-serif, sans-serif; font-size: 11px; position: relative; }
+    .rappel-title { position: absolute; top: -9px; left: 12px; background: var(--paper); padding: 0 6px; font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
     .rappel ul { list-style: disc; padding-left: 18px; line-height: 1.75; opacity: .82; }
 
-    /* ── Antisèche (cheat sheet) ──────────────── */
+    /* Antisèche */
     .antisec { position: absolute; top: 16px; right: -10px; z-index: 10; }
     .antisec-tab {
-      width: 36px; height: 36px;
-      background: #fef08a;
-      border-radius: 3px;
+      width: 36px; height: 36px; background: #fef08a; border-radius: 3px;
       box-shadow: 2px 2px 8px rgba(0,0,0,.18);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; font-size: 18px;
-      transform: rotate(5deg);
-      transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+      transition: transform .2s cubic-bezier(.34,1.56,.64,1);
       -webkit-tap-highlight-color: transparent;
+      transform: rotate(5deg);
     }
-    .antisec-tab:hover { transform: rotate(0deg) scale(1.12); box-shadow: 3px 3px 14px rgba(0,0,0,.22); }
+    .antisec-tab:hover { transform: rotate(0deg) scale(1.12); }
     .antisec-content {
       position: absolute; top: 0; right: calc(100% + 10px);
-      width: min(210px, 60vw);
-      background: #fef9c3;
-      border-radius: 4px; padding: 12px 14px;
-      font-size: 11.5px; font-style: italic;
-      font-family: ui-sans-serif, system-ui, sans-serif;
+      width: min(210px, 60vw); background: #fef9c3; border-radius: 4px;
+      padding: 12px 14px; font-size: 11.5px; font-style: italic;
+      font-family: ui-sans-serif, sans-serif;
       box-shadow: 3px 3px 16px rgba(0,0,0,.2);
-      transform-origin: top right;
-      transform: scale(0); opacity: 0;
+      transform-origin: top right; transform: scale(0); opacity: 0;
       transition: transform .28s cubic-bezier(.34,1.56,.64,1), opacity .22s;
-      line-height: 1.6; white-space: normal;
+      line-height: 1.6;
     }
     .antisec-content.show { transform: scale(1); opacity: 1; }
     .antisec-content strong { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-style: normal; opacity: .7; }
     .antisec-close { display: block; text-align: right; margin-top: 8px; cursor: pointer; font-size: 10px; opacity: .55; }
 
-    /* ── Question ─────────────────────────────── */
-    .q-head {
-      display: flex; justify-content: space-between; align-items: baseline;
-      font-size: 11px; font-family: ui-sans-serif, sans-serif;
-      text-transform: uppercase; letter-spacing: 1px;
-      opacity: .45; margin-bottom: 10px;
-    }
-    .q-text { font-size: clamp(16px, 2.8vw, 20px); font-weight: 700; margin-bottom: 4px; line-height: 1.35; }
-    .q-sub { font-size: clamp(12px, 1.8vw, 13.5px); font-style: italic; opacity: .52; margin-bottom: 20px; font-weight: 400; display: block; }
+    /* Question */
+    .q-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 11px; font-family: ui-sans-serif, sans-serif; text-transform: uppercase; letter-spacing: 1px; opacity: .45; margin-bottom: 10px; }
+    .q-text { font-size: clamp(16px,2.8vw,20px); font-weight: 700; margin-bottom: 4px; line-height: 1.35; }
+    .q-sub { font-size: clamp(12px,1.8vw,13.5px); font-style: italic; opacity: .52; margin-bottom: 20px; font-weight: 400; display: block; }
 
-    /* ── Options ──────────────────────────────── */
+    /* Options */
     .options { display: flex; flex-direction: column; }
-    .option {
-      display: flex; align-items: flex-start; gap: 11px;
-      padding: 9px 10px; border-radius: 6px;
-      transition: background .15s; cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
+    .option { display: flex; align-items: flex-start; gap: 11px; padding: 9px 10px; border-radius: 6px; transition: background .15s; cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .option.non { cursor: default; }
     .option.oui:hover      { background: rgba(255,79,129,.06); }
     .option.oui-bleu:hover { background: rgba(37,99,235,.06); }
-
-    /* Radio circle */
-    .radio {
-      width: 18px; height: 18px; border-radius: 50%;
-      border: 2px solid rgba(0,0,0,.28);
-      flex-shrink: 0; margin-top: 2px; position: relative;
-      transition: border-color .2s;
-    }
+    .radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(0,0,0,.28); flex-shrink: 0; margin-top: 2px; position: relative; transition: border-color .2s; }
     .option.oui:hover .radio      { border-color: var(--pink); }
     .option.oui-bleu:hover .radio { border-color: var(--blue); }
     .radio::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; transform: scale(0); transition: transform .22s cubic-bezier(.34,1.56,.64,1); }
@@ -301,155 +220,67 @@
     .radio.fill-pink::after { background: var(--pink); transform: scale(1); }
     .radio.fill-blue { border-color: var(--blue); }
     .radio.fill-blue::after { background: var(--blue); transform: scale(1); }
-
-    /* Crossed radio (NON/D) */
     .radio.crossed { border-color: var(--red); }
-    .radio.crossed::before,
-    .radio.crossed::after { content: ''; position: absolute; top: 50%; left: 50%; width: 12px; height: 2px; background: var(--red); border-radius: 1px; }
+    .radio.crossed::before, .radio.crossed::after { content: ''; position: absolute; top: 50%; left: 50%; width: 12px; height: 2px; background: var(--red); border-radius: 1px; }
     .radio.crossed::before { transform: translate(-50%, -50%) rotate(45deg); }
     .radio.crossed::after  { transform: translate(-50%, -50%) rotate(-45deg); }
-
     .opt-right { flex: 1; }
     .opt-row { display: flex; gap: 8px; align-items: flex-start; }
     .opt-letter { font-weight: 700; opacity: .6; flex-shrink: 0; }
-    .opt-text { font-size: clamp(13px, 2vw, 15px); line-height: 1.45; }
+    .opt-text { font-size: clamp(13px,2vw,15px); line-height: 1.45; }
     .opt-text.blue { color: var(--blue); font-weight: 600; }
     .opt-text.striked { text-decoration: line-through; text-decoration-color: var(--red); text-decoration-thickness: 2px; opacity: .5; }
-
-    /* Hover annotation (OUI) */
     .opt-hint { font-size: 11px; font-style: italic; color: var(--red); opacity: 0; transition: opacity .2s; margin-top: 3px; display: block; }
     .option:hover .opt-hint { opacity: 1; }
-
-    /* Always-visible annotation (NON/D) */
     .non-note { font-size: 11px; font-style: italic; color: var(--red); margin: 1px 0 8px 38px; display: block; opacity: .85; line-height: 1.5; }
 
-    /* ── FAUX stamp ───────────────────────────── */
+    /* Stamp */
     .stamp {
       position: absolute; top: 48%; left: 54%;
       transform: translate(-50%, -50%) rotate(-13deg) scale(0);
       color: var(--red); border: 5px solid var(--red); border-radius: 6px;
-      padding: 7px 18px; font-size: clamp(26px, 5.5vw, 46px);
+      padding: 7px 18px; font-size: clamp(26px,5.5vw,46px);
       font-weight: 900; letter-spacing: 5px;
       opacity: 0; pointer-events: none; z-index: 5;
-      font-family: ui-sans-serif, system-ui, sans-serif; text-transform: uppercase;
+      font-family: ui-sans-serif, sans-serif; text-transform: uppercase;
       transition: transform .22s cubic-bezier(.34,1.56,.64,1), opacity .12s;
       box-shadow: inset 0 0 0 2px rgba(192,57,43,.18);
     }
     .stamp.show { transform: translate(-50%, -50%) rotate(-13deg) scale(1); opacity: .88; }
 
-    /* Paper shake */
-    @keyframes shake {
-      0%,100% { transform: none; }
-      20% { transform: translateX(-7px) rotate(-.35deg); }
-      40% { transform: translateX(7px)  rotate(.35deg); }
-      60% { transform: translateX(-5px); }
-      80% { transform: translateX(5px); }
-    }
-    @keyframes shakeBig {
-      0%,100% { transform: none; }
-      15% { transform: translateX(-12px) rotate(-.55deg); }
-      30% { transform: translateX(12px)  rotate(.55deg); }
-      45% { transform: translateX(-9px)  rotate(-.35deg); }
-      60% { transform: translateX(9px)   rotate(.35deg); }
-      75% { transform: translateX(-6px); }
-      90% { transform: translateX(6px); }
-    }
+    @keyframes shake    { 0%,100%{transform:none} 20%{transform:translateX(-7px) rotate(-.35deg)} 40%{transform:translateX(7px) rotate(.35deg)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
+    @keyframes shakeBig { 0%,100%{transform:none} 15%{transform:translateX(-12px) rotate(-.55deg)} 30%{transform:translateX(12px) rotate(.55deg)} 45%{transform:translateX(-9px)} 60%{transform:translateX(9px)} 75%{transform:translateX(-6px)} 90%{transform:translateX(6px)} }
     .exam-paper.shake     { animation: shake .42s ease-out; }
     .exam-paper.shake-big { animation: shakeBig .58s ease-out; }
 
-    /* ── Footer ───────────────────────────────── */
-    .exam-footer {
-      border-top: 1px solid rgba(0,0,0,.12); padding-top: 12px; margin-top: 10px;
-      font-size: 11px; font-style: italic; color: var(--red); opacity: .7;
-      display: flex; justify-content: space-between; gap: 6px; flex-wrap: wrap;
-    }
+    .exam-footer { border-top: 1px solid rgba(0,0,0,.12); padding-top: 12px; margin-top: 10px; font-size: 11px; font-style: italic; color: var(--red); opacity: .7; display: flex; justify-content: space-between; gap: 6px; flex-wrap: wrap; }
 
     /* ══════════════════════════════════════════════
        Overlay — Bulletin de notes
     ══════════════════════════════════════════════ */
-    .overlay {
-      position: fixed; inset: 0; display: none; place-items: center;
-      background: rgba(20, 0, 12, .52); backdrop-filter: blur(10px);
-      padding: 18px; z-index: 30; overflow-y: auto;
-    }
+    .overlay { position: fixed; inset: 0; display: none; place-items: center; background: rgba(20,0,12,.52); backdrop-filter: blur(10px); padding: 18px; z-index: 30; overflow-y: auto; }
     .overlay.show { display: grid; }
-
-    .modal {
-      width: min(520px, 92vw);
-      background: var(--paper); border-radius: 3px;
-      padding: clamp(22px, 5vw, 36px);
-      box-shadow: 0 24px 72px rgba(0,0,0,.32);
-      position: relative; overflow: hidden;
-      margin: 20px 0;
-    }
-    /* lined paper in modal */
-    .modal::before {
-      content: '';
-      position: absolute; inset: 0;
-      background-image: repeating-linear-gradient(transparent, transparent 27px, var(--lines) 27px, var(--lines) 28px);
-      background-position: 0 52px; opacity: .3; pointer-events: none;
-    }
+    .modal { width: min(520px,92vw); background: var(--paper); border-radius: 3px; padding: clamp(22px,5vw,36px); box-shadow: 0 24px 72px rgba(0,0,0,.32); position: relative; overflow: hidden; margin: 20px 0; }
+    .modal::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(transparent,transparent 27px,var(--lines) 27px,var(--lines) 28px); background-position: 0 52px; opacity: .3; pointer-events: none; }
     .modal > * { position: relative; }
-
-    .modal-header {
-      text-align: center; padding-bottom: 14px;
-      border-bottom: 2.5px solid var(--ink); margin-bottom: 4px;
-    }
-    .modal-header strong { display: block; font-size: clamp(12px, 2.2vw, 14px); text-transform: uppercase; letter-spacing: .6px; }
+    .modal-header { text-align: center; padding-bottom: 14px; border-bottom: 2.5px solid var(--ink); margin-bottom: 4px; }
+    .modal-header strong { display: block; font-size: clamp(12px,2.2vw,14px); text-transform: uppercase; letter-spacing: .6px; }
     .modal-header span { font-size: 11px; opacity: .5; font-style: italic; }
-
-    .admis {
-      display: inline-block;
-      border: 5px solid var(--green); border-radius: 6px;
-      color: var(--green);
-      font-size: clamp(20px, 4vw, 30px);
-      font-weight: 900; letter-spacing: 5px;
-      padding: 6px 16px; margin: 14px 0 4px;
-      transform: rotate(-5deg); text-transform: uppercase;
-      box-shadow: inset 0 0 0 2px rgba(21,128,61,.18);
-      font-family: ui-sans-serif, system-ui, sans-serif;
-      animation: stampIn .42s cubic-bezier(.34,1.56,.64,1) both;
-    }
-    @keyframes stampIn {
-      from { transform: rotate(-5deg) scale(1.8); opacity: 0; }
-      to   { transform: rotate(-5deg) scale(1); opacity: 1; }
-    }
-
-    /* Grade table */
-    .grade-table {
-      width: 100%; border-collapse: collapse;
-      font-size: clamp(11px, 1.8vw, 13px); font-family: ui-sans-serif, system-ui, sans-serif;
-      margin: 14px 0;
-    }
-    .grade-table th {
-      border-bottom: 1.5px solid var(--ink); padding: 5px 8px; text-align: left;
-      font-size: 10px; text-transform: uppercase; letter-spacing: .8px; opacity: .5;
-    }
+    .admis { display: inline-block; border: 5px solid var(--green); border-radius: 6px; color: var(--green); font-size: clamp(20px,4vw,30px); font-weight: 900; letter-spacing: 5px; padding: 6px 16px; margin: 14px 0 4px; transform: rotate(-5deg); text-transform: uppercase; box-shadow: inset 0 0 0 2px rgba(21,128,61,.18); font-family: ui-sans-serif, sans-serif; }
+    .grade-table { width: 100%; border-collapse: collapse; font-size: clamp(11px,1.8vw,13px); font-family: ui-sans-serif, sans-serif; margin: 14px 0; }
+    .grade-table th { border-bottom: 1.5px solid var(--ink); padding: 5px 8px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: .8px; opacity: .5; }
     .grade-table td { padding: 6px 8px; border-bottom: 1px solid rgba(0,0,0,.07); vertical-align: top; line-height: 1.35; }
     .grade-table tr:last-child td { border-bottom: none; border-top: 1.5px solid var(--ink); font-weight: 700; padding-top: 8px; }
     .g-green { color: var(--green); font-weight: 700; }
-    .g-red   { color: var(--red); text-decoration: line-through; opacity: .65; font-size: .95em; }
-
-    /* Professor comment */
-    .prof-comment {
-      border-left: 3px solid var(--red); padding: 8px 12px; margin: 8px 0 14px;
-      font-size: 12px; font-style: italic; color: var(--red);
-      line-height: 1.6; opacity: .88;
-    }
-
+    .g-red { color: var(--red); text-decoration: line-through; opacity: .65; }
+    .prof-comment { border-left: 3px solid var(--red); padding: 8px 12px; margin: 8px 0 14px; font-size: 12px; font-style: italic; color: var(--red); line-height: 1.6; opacity: .88; }
     .modal-footer { text-align: center; }
     .modal-footer p { font-size: 12px; opacity: .5; margin-bottom: 12px; }
-
-    .btn-ok {
-      display: inline-block; border: 0; border-radius: 999px;
-      padding: 12px 32px; font-size: 15px; font-weight: 800;
-      cursor: pointer; font-family: ui-sans-serif, sans-serif;
-      color: #fff; border: 3px solid rgba(255,255,255,.85); transition: filter .15s;
-    }
-    .btn-ok:active { transform: scale(.97); }
+    .btn-ok { display: inline-block; border: 0; border-radius: 999px; padding: 12px 32px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: ui-sans-serif, sans-serif; color: #fff; border: 3px solid rgba(255,255,255,.85); transition: filter .15s; }
     .btn-ok.pink { background: linear-gradient(180deg, var(--pink), var(--pink2)); box-shadow: 0 10px 28px rgba(255,79,129,.28); }
     .btn-ok.blue { background: linear-gradient(180deg, var(--blue), var(--blue2)); box-shadow: 0 10px 28px rgba(37,99,235,.28); }
     .btn-ok:hover { filter: brightness(1.07); }
+    .btn-ok:active { transform: scale(.97); }
   </style>
 </head>
 <body>
@@ -457,31 +288,47 @@
   <canvas id="confetti"></canvas>
   <div class="hearts" id="hearts" aria-hidden="true"></div>
   <div class="toast" id="toast"></div>
+  <button class="sound-btn" id="soundBtn" title="Son">🔊</button>
 
   <!-- ══════════════════════════════════════════
        PAGE 1 — Enveloppe
   ══════════════════════════════════════════ -->
   <div class="page active" id="pageNote">
-    <div class="env-scene fade-in">
+    <div class="env-scene">
       <div class="env-perspective">
         <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Ouvrir l'enveloppe">
           <div class="env-body">
             <div class="env-address">Pour &nbsp;Lucie&nbsp; 💌</div>
           </div>
-          <div class="env-flap"></div>
+          <div class="env-flap" id="envFlap"></div>
           <div class="env-seal" id="envSeal">❤️</div>
         </div>
       </div>
-      <span class="env-hint">💌 Clique sur le cachet pour ouvrir</span>
+      <span class="env-hint" id="envHint">💌 Clique sur le cachet pour ouvrir</span>
     </div>
   </div>
 
   <!-- ══════════════════════════════════════════
-       PAGE 2 — Feuille d'examen
+       PAGE 2 — Chargement
+  ══════════════════════════════════════════ -->
+  <div class="page" id="pageLoading">
+    <div class="loading-paper" id="loadingPaper">
+      <div class="loading-uni">Université de mon Cœur</div>
+      <span class="loading-icon">📋</span>
+      <div class="loading-title">Chargement de l'épreuve…</div>
+      <div class="loading-bar-wrap">
+        <div class="loading-bar" id="loadingBar"></div>
+      </div>
+      <div class="loading-msg" id="loadingMsg">Initialisation…</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PAGE 3 — Examen
   ══════════════════════════════════════════ -->
   <div class="page" id="pageQuestion">
     <div class="exam-wrap">
-      <div class="exam-paper fade-in" id="examPaper">
+      <div class="exam-paper" id="examPaper">
 
         <div class="stamp" id="stamp">FAUX</div>
 
@@ -510,22 +357,10 @@
 
         <!-- Infos -->
         <div class="exam-meta">
-          <div class="field">
-            <span class="field-label">Nom :</span>
-            <span class="field-val">Lucie</span>
-          </div>
-          <div class="field">
-            <span class="field-label">Matière :</span>
-            <span class="field-val">Sentiments Avancés &amp; Biceps</span>
-          </div>
-          <div class="field">
-            <span class="field-label">Coefficient :</span>
-            <span class="field-val">∞</span>
-          </div>
-          <div class="field">
-            <span class="field-label">Durée :</span>
-            <span class="field-val">jusqu'à ce que la mort nous sépare</span>
-          </div>
+          <div class="field"><span class="field-label">Nom :</span><span class="field-val">Lucie</span></div>
+          <div class="field"><span class="field-label">Matière :</span><span class="field-val">Sentiments Avancés &amp; Biceps</span></div>
+          <div class="field"><span class="field-label">Coefficient :</span><span class="field-val">∞</span></div>
+          <div class="field"><span class="field-label">Durée :</span><span class="field-val">jusqu'à ce que la mort nous sépare</span></div>
         </div>
 
         <hr class="sep">
@@ -545,64 +380,47 @@
           <span>Question 1 / 1</span>
           <span>20 points</span>
         </div>
-
         <div class="q-text">Veux-tu être ma petite copine ?</div>
         <em class="q-sub">(j'ai plus envie d'être ton pote de fac)</em>
 
         <!-- Options -->
         <div class="options">
 
-          <!-- A — OUI rose -->
           <div class="option oui" id="optA" role="button" tabindex="0">
             <div class="radio" id="radioA"></div>
             <div class="opt-right">
-              <div class="opt-row">
-                <span class="opt-letter">A.</span>
-                <span class="opt-text">OUI je n'attends que ça 💖</span>
-              </div>
+              <div class="opt-row"><span class="opt-letter">A.</span><span class="opt-text">OUI je n'attends que ça 💖</span></div>
               <span class="opt-hint">← Bonne réponse — 20/20 ✓ &nbsp;(+10 kg de masse symbolique garantis)</span>
             </div>
           </div>
 
-          <!-- B — NON (déjà barré) -->
           <div class="option non" id="optB" role="button" tabindex="0" aria-disabled="true">
             <div class="radio crossed"></div>
             <div class="opt-right">
-              <div class="opt-row">
-                <span class="opt-letter">B.</span>
-                <span class="opt-text striked">NON je pense que tu es mieux en camarade de classe fictif</span>
-              </div>
+              <div class="opt-row"><span class="opt-letter">B.</span><span class="opt-text striked">NON je pense que tu es mieux en camarade de classe fictif</span></div>
             </div>
           </div>
           <span class="non-note" id="nonNoteB">↳ Réponse incorrecte — 0/20. Le correcteur a déjà statué. 😬</span>
 
-          <!-- C — OUI bleu -->
           <div class="option oui-bleu" id="optC" role="button" tabindex="0">
             <div class="radio" id="radioC"></div>
             <div class="opt-right">
-              <div class="opt-row">
-                <span class="opt-letter">C.</span>
-                <span class="opt-text blue">OUI mais en bleu</span>
-              </div>
+              <div class="opt-row"><span class="opt-letter">C.</span><span class="opt-text blue">OUI mais en bleu</span></div>
               <span class="opt-hint">← Aussi accepté — 20/20 ✓</span>
             </div>
           </div>
 
-          <!-- D — Aller à la salle -->
           <div class="option non" id="optD" role="button" tabindex="0" aria-disabled="true">
             <div class="radio crossed"></div>
             <div class="opt-right">
-              <div class="opt-row">
-                <span class="opt-letter">D.</span>
-                <span class="opt-text striked">Aller à la salle plutôt que répondre</span>
-              </div>
+              <div class="opt-row"><span class="opt-letter">D.</span><span class="opt-text striked">Aller à la salle plutôt que répondre</span></div>
             </div>
           </div>
           <span class="non-note">↳ Très drôle. Éliminatoire quand même. On ira à la salle APRÈS. 🏋️</span>
 
         </div>
 
-        <!-- Pied de page -->
+        <!-- Footer -->
         <div class="exam-footer">
           <span>Pr. Matthieu le mec aux gros bras — Maître de Conférences en Sentiments Avancés</span>
           <span>Deux bonnes réponses. Deux mauvaises. Choisir avec soin. 😌</span>
@@ -616,7 +434,7 @@
        Overlay — Bulletin de notes
   ══════════════════════════════════════════ -->
   <div class="overlay" id="overlay" role="dialog" aria-modal="true">
-    <div class="modal">
+    <div class="modal" id="modal">
 
       <div class="modal-header">
         <strong>Université de mon Cœur — FAC de mes sentiments</strong>
@@ -627,51 +445,23 @@
 
       <table class="grade-table">
         <thead>
-          <tr>
-            <th>Matière</th>
-            <th>Note</th>
-            <th>Appréciation</th>
-          </tr>
+          <tr><th>Matière</th><th>Note</th><th>Appréciation</th></tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>Anatomie du cœur (sens littéral)</td>
-            <td class="g-green">20/20</td>
-            <td>Excellente maîtrise</td>
-          </tr>
-          <tr>
-            <td>Sémiologie des sentiments</td>
-            <td class="g-green">20/20</td>
-            <td>Diagnostic parfait</td>
-          </tr>
-          <tr>
-            <td>Musculation du couple (UE obligatoire)</td>
-            <td class="g-green">20/20</td>
-            <td>Technique irréprochable</td>
-          </tr>
-          <tr>
-            <td>Physiologie de l'amour</td>
-            <td class="g-green">20/20</td>
-            <td>Très bien</td>
-          </tr>
-          <tr>
-            <td>Camaraderie fictive (option abandonnée)</td>
-            <td class="g-red">0/20</td>
-            <td style="opacity:.45;font-style:italic">Non pertinente</td>
-          </tr>
-          <tr>
-            <td>Moyenne générale</td>
-            <td class="g-green">20/20</td>
-            <td>Mention Très Bien 🏆</td>
-          </tr>
+        <tbody id="gradeRows">
+          <tr><td>Anatomie du cœur (sens littéral)</td><td class="g-green">20/20</td><td>Excellente maîtrise</td></tr>
+          <tr><td>Sémiologie des sentiments</td><td class="g-green">20/20</td><td>Diagnostic parfait</td></tr>
+          <tr><td>Musculation du couple (UE obligatoire)</td><td class="g-green">20/20</td><td>Technique irréprochable</td></tr>
+          <tr><td>Physiologie de l'amour</td><td class="g-green">20/20</td><td>Très bien</td></tr>
+          <tr><td>Camaraderie fictive (option abandonnée)</td><td class="g-red">0/20</td><td style="opacity:.45;font-style:italic">Non pertinente</td></tr>
+          <tr><td>Moyenne générale</td><td class="g-green">20/20</td><td>Mention Très Bien 🏆</td></tr>
         </tbody>
       </table>
 
       <div class="prof-comment" id="profComment">
         "Lucie a su identifier avec une précision clinique remarquable la seule réponse valide à cette épreuve.
         Sa capacité à prendre les bonnes décisions — qualité indispensable en médecine comme en couple — est ici parfaitement démontrée.
-        Ses biceps aussi sont une valeur ajoutée non négligeable.
-        Le jury félicite chaleureusement l'étudiante et lui souhaite une excellente suite de programme."
+        Ses biceps aussi sont une valeur ajoutée non négligeable pour la suite du programme.
+        Le jury félicite chaleureusement l'étudiante."
         <br><br>
         <em>— Pr. Matthieu le mec aux gros bras, Maître de Conférences en Sentiments Avancés</em>
       </div>
@@ -684,32 +474,82 @@
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script>
-    // ── Pages ─────────────────────────────────────
-    const envelope = document.getElementById('envelope');
-    const pageNote = document.getElementById('pageNote');
-    const pageQ    = document.getElementById('pageQuestion');
+    // ── Audio (Web Audio API) ─────────────────────
+    let audioCtx;
+    let soundOn = true;
 
-    function openEnvelope() {
-      envelope.classList.add('open');
-      envelope.style.pointerEvents = 'none';
-      setTimeout(() => {
-        pageNote.classList.remove('active');
-        pageQ.classList.add('active', 'fade-in');
-        setTimeout(() => document.getElementById('optA').focus(), 80);
-      }, 950);
+    function getAudioCtx() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      return audioCtx;
     }
-    envelope.addEventListener('click', openEnvelope);
-    envelope.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openEnvelope(); }
+    function play(fn) { if (!soundOn) return; try { fn(getAudioCtx()); } catch(e) {} }
+
+    function sndRustle() {
+      play(a => {
+        const n = Math.floor(a.sampleRate * 0.2);
+        const buf = a.createBuffer(1, n, a.sampleRate);
+        const d = buf.getChannelData(0);
+        for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+        const src = a.createBufferSource(); src.buffer = buf;
+        const flt = a.createBiquadFilter(); flt.type = 'bandpass'; flt.frequency.value = 2500; flt.Q.value = 0.8;
+        const g = a.createGain(); g.gain.setValueAtTime(0.055, a.currentTime); g.gain.exponentialRampToValueAtTime(0.001, a.currentTime + 0.18);
+        src.connect(flt); flt.connect(g); g.connect(a.destination);
+        src.start(); src.stop(a.currentTime + 0.22);
+      });
+    }
+
+    function sndStamp() {
+      play(a => {
+        const osc = a.createOscillator(); const g = a.createGain();
+        osc.connect(g); g.connect(a.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(90, a.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(22, a.currentTime + 0.14);
+        g.gain.setValueAtTime(0.38, a.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, a.currentTime + 0.18);
+        osc.start(); osc.stop(a.currentTime + 0.22);
+      });
+    }
+
+    function sndError() {
+      play(a => {
+        const osc = a.createOscillator(); const g = a.createGain();
+        osc.connect(g); g.connect(a.destination);
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(200, a.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(80, a.currentTime + 0.15);
+        g.gain.setValueAtTime(0.06, a.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, a.currentTime + 0.18);
+        osc.start(); osc.stop(a.currentTime + 0.2);
+      });
+    }
+
+    function sndSuccess() {
+      play(a => {
+        [[523.25,0],[659.25,.1],[783.99,.2],[1046.5,.32]].forEach(([f, t]) => {
+          const osc = a.createOscillator(); const g = a.createGain();
+          osc.connect(g); g.connect(a.destination);
+          osc.type = 'sine'; osc.frequency.setValueAtTime(f, a.currentTime + t);
+          g.gain.setValueAtTime(0, a.currentTime + t);
+          g.gain.linearRampToValueAtTime(0.11, a.currentTime + t + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.001, a.currentTime + t + 0.4);
+          osc.start(a.currentTime + t); osc.stop(a.currentTime + t + 0.45);
+        });
+      });
+    }
+
+    document.getElementById('soundBtn').addEventListener('click', () => {
+      soundOn = !soundOn;
+      document.getElementById('soundBtn').textContent = soundOn ? '🔊' : '🔇';
     });
 
     // ── Floating hearts ───────────────────────────
     const heartsEl   = document.getElementById('hearts');
     const heartChars = ['💖','💘','💝','💗','✨','❤️','🌸','💕'];
     function makeHeart() {
-      const h = document.createElement('div');
-      h.className = 'heart';
+      const h = document.createElement('div'); h.className = 'heart';
       h.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
       h.style.left = Math.random() * 100 + 'vw';
       const dur = 7 + Math.random() * 9;
@@ -722,13 +562,99 @@
     setInterval(makeHeart, 500);
 
     // ── Toast ─────────────────────────────────────
-    const toast = document.getElementById('toast');
+    const toastEl = document.getElementById('toast');
     let toastTimer;
     function showToast(msg) {
-      toast.textContent = msg;
-      toast.classList.add('show');
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove('show'), 2700);
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2700);
+    }
+
+    // ── GSAP : Envelope entrance ──────────────────
+    const envelope = document.getElementById('envelope');
+    const envHint  = document.getElementById('envHint');
+
+    gsap.set(envelope, { y: -130, rotation: -7, opacity: 0 });
+    gsap.set(envHint,  { opacity: 0, y: 8 });
+
+    gsap.to(envelope, { y: 0, rotation: 0, opacity: 1, duration: 0.95, ease: 'back.out(1.6)', delay: 0.3 });
+    gsap.to(envHint,  { opacity: 1, y: 0, duration: 0.5, delay: 1.25 });
+
+    // Floating animation
+    let floatTween = gsap.to(envelope, { y: -10, duration: 2.4, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1.5 });
+
+    // ── Envelope open ─────────────────────────────
+    const pageNote     = document.getElementById('pageNote');
+    const pageLoading  = document.getElementById('pageLoading');
+    const pageQuestion = document.getElementById('pageQuestion');
+
+    function openEnvelope() {
+      envelope.style.pointerEvents = 'none';
+      sndRustle();
+      floatTween.kill();
+
+      const tl = gsap.timeline();
+      tl.to('#envSeal',  { scale: 1.9, opacity: 0, duration: 0.22, ease: 'power2.in' });
+      tl.to('#envFlap',  { rotationX: -178, duration: 0.8, ease: 'power2.inOut', transformOrigin: '50% 0%' }, '-=0.05');
+      tl.to(envelope,    { y: -20, duration: 0.35, ease: 'power1.out' }, '-=0.65');
+      tl.to(pageNote,    { opacity: 0, duration: 0.3, ease: 'power2.in',
+        onComplete: () => { pageNote.classList.remove('active'); pageNote.style.opacity = ''; startLoading(); }
+      }, '+=0.1');
+    }
+
+    envelope.addEventListener('click', openEnvelope);
+    envelope.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openEnvelope(); } });
+
+    // ── Loading ───────────────────────────────────
+    const loadingMsgs = [
+      "Vérification des révisions de l'étudiante…",
+      "Analyse du niveau de biceps… 💪",
+      "Calcul du coefficient sentimental…",
+      "Consultation du correcteur…",
+      "Chargement de la question unique…",
+      "Tout est prêt. Bonne chance. 😬",
+    ];
+
+    function startLoading() {
+      pageLoading.classList.add('active');
+      const paper = document.getElementById('loadingPaper');
+      const bar   = document.getElementById('loadingBar');
+      const msg   = document.getElementById('loadingMsg');
+
+      gsap.set(paper, { y: 28, opacity: 0 });
+      gsap.to(paper,  { y: 0, opacity: 1, duration: 0.45, ease: 'back.out(1.5)' });
+
+      const totalMs = 3200;
+      gsap.to(bar, { width: '100%', duration: totalMs / 1000, ease: 'power1.inOut' });
+
+      loadingMsgs.forEach((text, i) => {
+        setTimeout(() => {
+          gsap.to(msg, { opacity: 0, duration: 0.15, onComplete: () => {
+            msg.textContent = text;
+            gsap.to(msg, { opacity: 1, duration: 0.2 });
+          }});
+        }, (totalMs / loadingMsgs.length) * i);
+      });
+
+      setTimeout(() => {
+        gsap.to(paper, { y: -22, opacity: 0, duration: 0.32, ease: 'power2.in',
+          onComplete: () => {
+            pageLoading.classList.remove('active');
+            pageQuestion.classList.add('active');
+            animateExamIn();
+          }
+        });
+      }, totalMs + 300);
+    }
+
+    // ── Exam entrance ─────────────────────────────
+    function animateExamIn() {
+      const paper = document.getElementById('examPaper');
+      gsap.set(paper, { y: 55, opacity: 0 });
+      gsap.to(paper, { y: 0, opacity: 1, duration: 0.55, ease: 'back.out(1.4)', delay: 0.05 });
+      gsap.fromTo('.option', { opacity: 0, x: -16 }, { opacity: 1, x: 0, stagger: 0.07, duration: 0.35, delay: 0.35 });
+      setTimeout(() => document.getElementById('optA').focus(), 650);
     }
 
     // ── Antisèche ─────────────────────────────────
@@ -745,42 +671,40 @@
     const stamp     = document.getElementById('stamp');
     const examPaper = document.getElementById('examPaper');
     const nonNoteB  = document.getElementById('nonNoteB');
-    let stampTimer;
-    let nonClicks = 0;
+    let stampTimer, nonClicks = 0;
 
     const nonToasts = [
       'Le correcteur a déjà tranché 😌',
       'Diagnostic : réponse incorrecte. Prescription : recommencer.',
       '0/20 — résultat éliminatoire. Sérieusement.',
       'Cette tentative a été signalée au jury. 😬',
-      'L\'examen est suspendu pour tentative de fraude.',
+      "L'examen est suspendu pour tentative de fraude.",
       'Tu sais très bien ce que tu dois faire. 😏',
     ];
     const nonNotes = [
       '↳ Réponse incorrecte — 0/20. Le correcteur a déjà statué. 😬',
       '↳ Toujours faux. On te l\'avait prévenu. Résultat : éliminatoire.',
-      '↳ 3ème tentative notée. Signalement au jury en cours...',
+      '↳ 3ème tentative notée. Signalement au jury en cours…',
       '↳ Le jury est épuisé. Merci de choisir A ou C. 🙏',
     ];
 
     function triggerFaux(isD) {
       nonClicks++;
+      sndStamp();
+      sndError();
+      if (navigator.vibrate) navigator.vibrate([70, 40, 70]);
+
       stamp.textContent = nonClicks >= 4 ? 'COPIE NULLE' : 'FAUX';
-      stamp.classList.remove('show');
-      void stamp.offsetWidth;
-      stamp.classList.add('show');
+      stamp.classList.remove('show'); void stamp.offsetWidth; stamp.classList.add('show');
       clearTimeout(stampTimer);
       stampTimer = setTimeout(() => stamp.classList.remove('show'), 1600);
 
       const shakeClass = nonClicks >= 3 ? 'shake-big' : 'shake';
-      examPaper.classList.remove('shake', 'shake-big');
-      void examPaper.offsetWidth;
+      examPaper.classList.remove('shake', 'shake-big'); void examPaper.offsetWidth;
       examPaper.classList.add(shakeClass);
       examPaper.addEventListener('animationend', () => examPaper.classList.remove('shake', 'shake-big'), { once: true });
 
-      if (!isD) {
-        nonNoteB.textContent = nonNotes[Math.min(nonClicks - 1, nonNotes.length - 1)];
-      }
+      if (!isD) nonNoteB.textContent = nonNotes[Math.min(nonClicks - 1, nonNotes.length - 1)];
       showToast(nonToasts[Math.min(nonClicks - 1, nonToasts.length - 1)]);
     }
 
@@ -820,15 +744,14 @@
       }
     }
 
-    function drawHeart(x, y, size, rot, color) {
-      ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
-      ctx.scale(size / 30, size / 30);
+    function drawHeart(x, y, s, r, c) {
+      ctx.save(); ctx.translate(x, y); ctx.rotate(r); ctx.scale(s / 30, s / 30);
       ctx.beginPath(); ctx.moveTo(0, 10);
       ctx.bezierCurveTo(0, -10, -30, -10, -30, 10);
       ctx.bezierCurveTo(-30, 30, 0, 40, 0, 55);
       ctx.bezierCurveTo(0, 40, 30, 30, 30, 10);
       ctx.bezierCurveTo(30, -10, 0, -10, 0, 10);
-      ctx.closePath(); ctx.fillStyle = color; ctx.fill(); ctx.restore();
+      ctx.closePath(); ctx.fillStyle = c; ctx.fill(); ctx.restore();
     }
 
     function confettiLoop() {
@@ -849,30 +772,30 @@
 
     function handleOui(isBlue, radioId) {
       document.getElementById(radioId).classList.add(isBlue ? 'fill-blue' : 'fill-pink');
+      sndSuccess();
+      if (navigator.vibrate) navigator.vibrate([50, 50, 100, 50, 200]);
 
       setTimeout(() => {
-        const stamp2   = document.getElementById('admisStamp');
-        const btn      = document.getElementById('btnClose');
-        const comment  = document.getElementById('profComment');
+        const stamp2  = document.getElementById('admisStamp');
+        const btn     = document.getElementById('btnClose');
+        const comment = document.getElementById('profComment');
 
         if (isBlue) {
-          stamp2.style.color       = '#1d4ed8';
-          stamp2.style.borderColor = '#1d4ed8';
-          btn.className            = 'btn-ok blue';
-          comment.style.borderLeftColor = '#2563eb';
+          stamp2.style.color = '#1d4ed8'; stamp2.style.borderColor = '#1d4ed8';
+          btn.className = 'btn-ok blue'; comment.style.borderLeftColor = '#2563eb';
         } else {
-          stamp2.style.color       = '';
-          stamp2.style.borderColor = '';
-          btn.className            = 'btn-ok pink';
-          comment.style.borderLeftColor = '';
+          stamp2.style.color = ''; stamp2.style.borderColor = '';
+          btn.className = 'btn-ok pink'; comment.style.borderLeftColor = '';
         }
 
-        // re-déclenche l'animation du tampon
-        stamp2.style.animation = 'none';
-        void stamp2.offsetWidth;
-        stamp2.style.animation = '';
-
         overlay.classList.add('show');
+
+        // GSAP animations inside overlay
+        gsap.fromTo('#modal',       { y: 32, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: 'back.out(1.4)' });
+        gsap.fromTo(stamp2,         { scale: 2.4, rotation: -20, opacity: 0 }, { scale: 1, rotation: -5, opacity: 1, duration: 0.48, ease: 'back.out(1.8)', delay: 0.2 });
+        gsap.fromTo('#gradeRows tr',{ opacity: 0, x: -18 }, { opacity: 1, x: 0, stagger: 0.09, duration: 0.3, delay: 0.45 });
+        gsap.fromTo('#profComment', { opacity: 0, y: 8 },   { opacity: 1, y: 0, duration: 0.4, delay: 1.0 });
+
         confettiEl.classList.add('show');
         spawnConfetti(isBlue);
         if (!animId) confettiLoop();
@@ -885,7 +808,6 @@
     document.getElementById('optA').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleOui(false, 'radioA'); } });
     document.getElementById('optC').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleOui(true,  'radioC'); } });
 
-    // ── Fermer overlay ────────────────────────────
     document.getElementById('btnClose').addEventListener('click', () => overlay.classList.remove('show'));
     overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('show'); });
   </script>
