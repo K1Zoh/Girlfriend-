@@ -113,6 +113,47 @@
     }
 
     /* ══════════════════════════════════════════════
+       PAGE 1.5 — Lettre
+    ══════════════════════════════════════════════ */
+    .letter-scene { width: 100%; display: flex; justify-content: center; align-items: center; }
+    .letter-paper {
+      width: min(480px, 90vw);
+      background: #fdfcf4;
+      border-radius: 3px;
+      padding: clamp(28px,6vw,48px) clamp(24px,5vw,40px) clamp(22px,4vw,36px);
+      box-shadow: 0 1px 0 rgba(0,0,0,.06), 0 4px 10px rgba(0,0,0,.08), 0 22px 60px rgba(0,0,0,.2);
+      position: relative;
+      background-image: repeating-linear-gradient(transparent, transparent 27px, var(--lines) 27px, var(--lines) 28px);
+      background-position: 0 62px;
+    }
+    .letter-date {
+      font-size: 11px; font-family: ui-sans-serif, sans-serif;
+      opacity: .4; margin-bottom: 18px; letter-spacing: .5px;
+    }
+    .letter-body {
+      font-family: Georgia, ui-serif, serif; font-style: italic;
+      font-size: clamp(13px, 1.9vw, 15px); line-height: 28px;
+      color: var(--ink);
+    }
+    .letter-body p { margin-bottom: 0; }
+    .letter-sig {
+      text-align: right; margin-top: 24px; font-style: italic;
+      opacity: .75; line-height: 28px; font-family: Georgia, ui-serif, serif;
+      font-size: clamp(13px, 1.9vw, 15px);
+    }
+    .letter-continue {
+      display: block; margin: 28px auto 0;
+      border: 1.5px solid var(--red); border-radius: 99px;
+      background: transparent; cursor: pointer;
+      font-family: ui-sans-serif, sans-serif; font-size: 13px; font-weight: 600;
+      color: var(--red); opacity: .72; letter-spacing: .4px;
+      padding: 8px 22px;
+      transition: opacity .2s, background .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .letter-continue:hover { opacity: 1; background: rgba(192,57,43,.05); }
+
+    /* ══════════════════════════════════════════════
        PAGE 2 — Chargement
     ══════════════════════════════════════════════ */
     .loading-paper {
@@ -131,7 +172,7 @@
     /* ══════════════════════════════════════════════
        PAGE 3 — Examen
     ══════════════════════════════════════════════ */
-    .exam-wrap { width: min(610px, 92vw); }
+    .exam-wrap { width: min(620px, 92vw); }
     .exam-paper {
       background: var(--paper); border-radius: 3px;
       padding: clamp(20px,5vw,40px);
@@ -171,9 +212,53 @@
     .field-val { font-weight: 700; border-bottom: 1px solid rgba(0,0,0,.22); padding: 0 4px; min-width: 60px; }
     hr.sep { border: none; border-top: 1px solid rgba(0,0,0,.14); margin: 10px 0 14px; }
 
-    .rappel { border: 1.5px solid var(--ink); border-radius: 2px; padding: 10px 14px; margin-bottom: 16px; font-family: ui-sans-serif, sans-serif; font-size: 11px; position: relative; }
+    /* ── Patience du jury ────────────────────────── */
+    .patience-wrap { margin: 0 0 14px; }
+    .patience-label {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 10px; font-family: ui-sans-serif, sans-serif;
+      opacity: .55; margin-bottom: 5px; letter-spacing: .3px;
+    }
+    .patience-label span:first-child { font-weight: 600; }
+    .patience-bar-bg { height: 5px; background: rgba(0,0,0,.07); border-radius: 99px; overflow: hidden; }
+    .patience-bar-fill {
+      height: 100%; width: 100%; border-radius: 99px;
+      background: linear-gradient(90deg, #15803d, #22c55e);
+      transition: width .65s cubic-bezier(.4,0,.2,1), background .5s ease;
+    }
+    .patience-msg {
+      font-size: 10px; font-style: italic; color: var(--red);
+      min-height: 13px; margin-top: 4px; text-align: right;
+      font-family: ui-sans-serif, sans-serif; opacity: 0; transition: opacity .35s;
+    }
+    .patience-msg.show { opacity: .82; }
+
+    .rappel { border: 1.5px solid var(--ink); border-radius: 2px; padding: 10px 14px; margin-bottom: 14px; font-family: ui-sans-serif, sans-serif; font-size: 11px; position: relative; }
     .rappel-title { position: absolute; top: -9px; left: 12px; background: var(--paper); padding: 0 6px; font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
     .rappel ul { list-style: disc; padding-left: 18px; line-height: 1.75; opacity: .82; }
+
+    /* ── Règlement intérieur ─────────────────────── */
+    .reglement {
+      border: 1px dashed rgba(0,0,0,.2); border-radius: 2px;
+      margin-bottom: 14px; overflow: hidden;
+      font-family: ui-sans-serif, sans-serif;
+    }
+    .reglement-header {
+      cursor: pointer; padding: 8px 13px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 10.5px; background: rgba(0,0,0,.025);
+      user-select: none; -webkit-tap-highlight-color: transparent;
+      transition: background .15s;
+    }
+    .reglement-header:hover { background: rgba(0,0,0,.045); }
+    .reglement-header-left { display: flex; align-items: center; gap: 6px; font-weight: 600; letter-spacing: .3px; }
+    .reglement-arrow { font-size: 9px; opacity: .45; transition: transform .28s cubic-bezier(.4,0,.2,1); display: inline-block; }
+    .reglement-arrow.open { transform: rotate(90deg); }
+    .reglement-body { max-height: 0; overflow: hidden; transition: max-height .42s cubic-bezier(.4,0,.2,1); }
+    .reglement-body.open { max-height: 600px; }
+    .reglement-content { padding: 11px 14px 13px; font-size: 10.5px; line-height: 1.85; border-top: 1px dashed rgba(0,0,0,.12); }
+    .reglement-content p { margin-bottom: 3px; }
+    .reglement-content strong { opacity: .7; }
 
     /* Antisèche */
     .antisec { position: absolute; top: 16px; right: -10px; z-index: 10; }
@@ -281,6 +366,70 @@
     .btn-ok.blue { background: linear-gradient(180deg, var(--blue), var(--blue2)); box-shadow: 0 10px 28px rgba(37,99,235,.28); }
     .btn-ok:hover { filter: brightness(1.07); }
     .btn-ok:active { transform: scale(.97); }
+
+    /* ══════════════════════════════════════════════
+       Windows 98 dialog
+    ══════════════════════════════════════════════ */
+    .win98-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,.38);
+      display: none; place-items: center; z-index: 70;
+      backdrop-filter: blur(2px);
+    }
+    .win98-backdrop.show { display: grid; }
+    .win98-window {
+      background: #c0c0c0;
+      border: 2px solid;
+      border-color: #fff #808080 #808080 #fff;
+      box-shadow: 4px 4px 0 #000, inset 1px 1px 0 #dfdfdf;
+      width: min(390px, 92vw);
+      font-family: 'Tahoma', 'Verdana', 'Arial', sans-serif;
+    }
+    .win98-titlebar {
+      background: linear-gradient(90deg, #000080, #1084d0);
+      color: #fff; padding: 3px 5px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; font-weight: 700; gap: 8px; user-select: none;
+    }
+    .win98-titlebar-left { display: flex; align-items: center; gap: 5px; }
+    .win98-close-btn {
+      background: #c0c0c0;
+      border: 2px solid;
+      border-color: #fff #808080 #808080 #fff;
+      width: 16px; height: 14px; font-size: 9px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-family: 'Arial', sans-serif; font-weight: 700; flex-shrink: 0;
+      padding: 0; line-height: 1; color: #000;
+    }
+    .win98-close-btn:active { border-color: #808080 #fff #fff #808080; }
+    .win98-content {
+      padding: 18px 18px 12px;
+      display: flex; gap: 14px; align-items: flex-start;
+    }
+    .win98-icon { font-size: 40px; flex-shrink: 0; line-height: 1; }
+    .win98-text { font-size: 12px; line-height: 1.65; }
+    .win98-text strong { display: block; margin-bottom: 8px; font-size: 12px; }
+    .win98-text ul { list-style: disc; padding-left: 18px; margin: 8px 0; }
+    .win98-text li { margin-bottom: 2px; }
+    .win98-buttons {
+      padding: 8px 18px 14px;
+      display: flex; justify-content: center; gap: 8px;
+      border-top: 1px solid #808080;
+    }
+    .win98-btn {
+      background: #c0c0c0;
+      border: 2px solid;
+      border-color: #fff #808080 #808080 #fff;
+      padding: 4px 0; font-size: 11px;
+      font-family: 'Tahoma', 'Verdana', 'Arial', sans-serif;
+      cursor: pointer; min-width: 88px; text-align: center;
+      box-shadow: 1px 1px 0 #000;
+    }
+    .win98-btn:active {
+      border-color: #808080 #fff #fff #808080;
+      box-shadow: none;
+      transform: translate(1px, 1px);
+    }
+    .win98-btn:focus { outline: 1px dotted #000; outline-offset: -4px; }
   </style>
 </head>
 <body>
@@ -305,6 +454,40 @@
         </div>
       </div>
       <span class="env-hint" id="envHint">💌 Clique sur le cachet pour ouvrir</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PAGE 1.5 — Lettre manuscrite
+  ══════════════════════════════════════════ -->
+  <div class="page" id="pageLetter">
+    <div class="letter-scene">
+      <div class="letter-paper" id="letterPaper">
+        <div class="letter-date">Mars 2026</div>
+        <div class="letter-body">
+          <p>Lucie,</p>
+          <p>&nbsp;</p>
+          <p>Si tu lis cette lettre, c'est que tu as ouvert l'enveloppe.</p>
+          <p>Ce qui prouve que tu as de la curiosité. Bonne chose.</p>
+          <p>&nbsp;</p>
+          <p>Tu suis une des formations les plus dures de France.</p>
+          <p>Tu soulèves des barres que la plupart des gens regardent avec respect — et recul.</p>
+          <p>&nbsp;</p>
+          <p>Et pourtant, là — tu vas passer l'épreuve la plus importante de ta vie.</p>
+          <p><em style="font-size:.9em;opacity:.65;">(C'est moi qui l'ai dit. Donc c'est officiel.)</em></p>
+          <p>&nbsp;</p>
+          <p>J'aurais pu faire un discours romantique.</p>
+          <p>Mais j'ai pensé que tu méritais quelque chose de plus… institutionnel.</p>
+          <p>&nbsp;</p>
+          <p>On se retrouve dans quelques secondes pour l'épreuve.</p>
+          <p>Bonne chance. <em style="font-size:.88em;opacity:.6;">(Tu n'en auras pas besoin.)</em></p>
+        </div>
+        <div class="letter-sig">
+          — Matthieu<br>
+          <span style="font-size:.85em;opacity:.6;">le mec aux gros bras &nbsp;💪❤️</span>
+        </div>
+        <button class="letter-continue" id="letterContinue">Passer l'épreuve →</button>
+      </div>
     </div>
   </div>
 
@@ -365,6 +548,18 @@
 
         <hr class="sep">
 
+        <!-- Patience du jury -->
+        <div class="patience-wrap">
+          <div class="patience-label">
+            <span>⚖️ Patience du jury</span>
+            <span id="patiencePercent">100%</span>
+          </div>
+          <div class="patience-bar-bg">
+            <div class="patience-bar-fill" id="patienceBar"></div>
+          </div>
+          <div class="patience-msg" id="patienceMsg"></div>
+        </div>
+
         <!-- Rappel important -->
         <div class="rappel">
           <span class="rappel-title">⚠️ Rappel important</span>
@@ -373,6 +568,28 @@
             <li>L'usage de l'antisèche (en haut à droite) est toléré, voire fortement conseillé.</li>
             <li>Ce contrôle ne se récupère pas. Il n'y aura pas de session de rattrapage.</li>
           </ul>
+        </div>
+
+        <!-- Règlement intérieur -->
+        <div class="reglement">
+          <div class="reglement-header" id="reglementHeader" role="button" tabindex="0" aria-expanded="false">
+            <div class="reglement-header-left">
+              <span>📜</span>
+              <span>Règlement intérieur de l'épreuve</span>
+            </div>
+            <span class="reglement-arrow" id="reglementArrow">▶</span>
+          </div>
+          <div class="reglement-body" id="reglementBody">
+            <div class="reglement-content">
+              <p><strong>Art. 1</strong> — Le présent règlement s'applique à toute épreuve sentimentale de coefficient infini, sans exception, y compris les jours de compétition.</p>
+              <p><strong>Art. 3</strong> — Tout sentiment non exprimé dans les délais impartis est soumis à une majoration de 20% d'attentes non formulées, à la charge exclusive du jury.</p>
+              <p><strong>Art. 7</strong> — Les biceps constituent un argument juridique recevable dans le présent établissement, sous réserve que leur propriétaire soit également Matthieu.</p>
+              <p><strong>Art. 12</strong> — La « camaraderie fictive » est par la présente officiellement dissoute. Toute tentative de la maintenir sera traitée comme une fraude académique de premier degré.</p>
+              <p><strong>Art. 15</strong> — Le jury (Matthieu) se réserve le droit de faire des tractions en cas de réponse correcte, à titre de célébration institutionnelle.</p>
+              <p><strong>Art. 18</strong> — En cas de réponse B ou D répétée, l'étudiante sera conviée à un entretien individuel non optionnel portant sur ses choix de vie et son niveau d'auto-sabotage.</p>
+              <p><strong>Art. 23</strong> — Le présent règlement prévaut sur toute notion de logique, de doute ou de mauvaise foi. Le jury a toujours raison. Sauf s'il a tort, auquel cas il ira à la salle.</p>
+            </div>
+          </div>
         </div>
 
         <!-- Question -->
@@ -413,10 +630,10 @@
           <div class="option non" id="optD" role="button" tabindex="0" aria-disabled="true">
             <div class="radio crossed"></div>
             <div class="opt-right">
-              <div class="opt-row"><span class="opt-letter">D.</span><span class="opt-text striked">Aller à la salle plutôt que répondre</span></div>
+              <div class="opt-row"><span class="opt-letter">D.</span><span class="opt-text striked" id="optDText">Aller à la salle plutôt que répondre</span></div>
             </div>
           </div>
-          <span class="non-note">↳ Très drôle. Éliminatoire quand même. On ira à la salle APRÈS. 🏋️</span>
+          <span class="non-note" id="optDNote">↳ Très drôle. Éliminatoire quand même. On ira à la salle APRÈS. 🏋️</span>
 
         </div>
 
@@ -471,6 +688,41 @@
         <button class="btn-ok pink" id="btnClose" type="button">🥰</button>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       Windows 98 — Confirmation popup
+  ══════════════════════════════════════════ -->
+  <div class="win98-backdrop" id="win98Backdrop">
+    <div class="win98-window" id="win98Window">
+      <div class="win98-titlebar">
+        <div class="win98-titlebar-left">
+          <span>⚠️</span>
+          <span>Erreur critique — Système d'Examen v98</span>
+        </div>
+        <button class="win98-close-btn" id="win98CloseBtn" aria-label="Fermer">✕</button>
+      </div>
+      <div class="win98-content">
+        <div class="win98-icon">⚠️</div>
+        <div class="win98-text">
+          <strong>Avertissement du Système</strong>
+          Le jury a détecté un comportement cliniquement préoccupant.<br>
+          Vous avez sélectionné des réponses éliminatoires à de nombreuses reprises.<br><br>
+          Cette action entraîne :
+          <ul>
+            <li>Une note de 0/20 (définitive)</li>
+            <li>Un chagrin probable pour le correcteur</li>
+            <li>Une perte symbolique de masse musculaire</li>
+          </ul>
+          <br>
+          Souhaitez-vous reconsidérer votre choix de vie ?
+        </div>
+      </div>
+      <div class="win98-buttons">
+        <button class="win98-btn" id="win98Cancel">Annuler</button>
+        <button class="win98-btn" id="win98Suffer">Je veux souffrir</button>
+      </div>
     </div>
   </div>
 
@@ -581,14 +833,15 @@
     gsap.to(envelope, { y: 0, rotation: 0, opacity: 1, duration: 0.95, ease: 'back.out(1.6)', delay: 0.3 });
     gsap.to(envHint,  { opacity: 1, y: 0, duration: 0.5, delay: 1.25 });
 
-    // Floating animation
     let floatTween = gsap.to(envelope, { y: -10, duration: 2.4, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1.5 });
 
-    // ── Envelope open ─────────────────────────────
+    // ── Pages ─────────────────────────────────────
     const pageNote     = document.getElementById('pageNote');
+    const pageLetter   = document.getElementById('pageLetter');
     const pageLoading  = document.getElementById('pageLoading');
     const pageQuestion = document.getElementById('pageQuestion');
 
+    // ── Envelope open ─────────────────────────────
     function openEnvelope() {
       envelope.style.pointerEvents = 'none';
       sndRustle();
@@ -599,12 +852,28 @@
       tl.to('#envFlap',  { rotationX: -178, duration: 0.8, ease: 'power2.inOut', transformOrigin: '50% 0%' }, '-=0.05');
       tl.to(envelope,    { y: -20, duration: 0.35, ease: 'power1.out' }, '-=0.65');
       tl.to(pageNote,    { opacity: 0, duration: 0.3, ease: 'power2.in',
-        onComplete: () => { pageNote.classList.remove('active'); pageNote.style.opacity = ''; startLoading(); }
+        onComplete: () => { pageNote.classList.remove('active'); pageNote.style.opacity = ''; showLetter(); }
       }, '+=0.1');
     }
 
     envelope.addEventListener('click', openEnvelope);
     envelope.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openEnvelope(); } });
+
+    // ── Letter page ───────────────────────────────
+    function showLetter() {
+      pageLetter.classList.add('active');
+      const paper = document.getElementById('letterPaper');
+      gsap.set(paper, { y: 38, opacity: 0, rotation: -1 });
+      gsap.to(paper, { y: 0, opacity: 1, rotation: 0, duration: 0.6, ease: 'back.out(1.4)', delay: 0.05 });
+    }
+
+    document.getElementById('letterContinue').addEventListener('click', () => {
+      const paper = document.getElementById('letterPaper');
+      sndRustle();
+      gsap.to(paper, { y: -24, opacity: 0, duration: 0.3, ease: 'power2.in',
+        onComplete: () => { pageLetter.classList.remove('active'); startLoading(); }
+      });
+    });
 
     // ── Loading ───────────────────────────────────
     const loadingMsgs = [
@@ -667,6 +936,99 @@
       document.getElementById('antisecContent').classList.remove('show');
     });
 
+    // ── Règlement intérieur ───────────────────────
+    const reglementHeader = document.getElementById('reglementHeader');
+    const reglementBody   = document.getElementById('reglementBody');
+    const reglementArrow  = document.getElementById('reglementArrow');
+
+    reglementHeader.addEventListener('click', () => {
+      const isOpen = reglementBody.classList.toggle('open');
+      reglementArrow.classList.toggle('open', isOpen);
+      reglementHeader.setAttribute('aria-expanded', isOpen);
+    });
+    reglementHeader.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); reglementHeader.click(); }
+    });
+
+    // ── Patience du jury ──────────────────────────
+    let patience = 100;
+    const patienceBarEl   = document.getElementById('patienceBar');
+    const patiencePercent = document.getElementById('patiencePercent');
+    const patienceMsg     = document.getElementById('patienceMsg');
+
+    const patienceMsgs = [
+      '',
+      '',
+      "Le jury commence \u00e0 s'impatienter.",
+      "S\u00e9rieusement. C'est embarrassant.",
+      '⚠️ Patience critique. Dernier avertissement.',
+      '⚠️ Le jury enfile ses chaussures de sport.',
+      'Le correcteur a lâché son stylo.',
+    ];
+
+    function updatePatience() {
+      patience = Math.max(0, patience - 15);
+      patiencePercent.textContent = patience + '%';
+      patienceBarEl.style.width = patience + '%';
+
+      if (patience > 60) {
+        patienceBarEl.style.background = 'linear-gradient(90deg, #15803d, #22c55e)';
+      } else if (patience > 30) {
+        patienceBarEl.style.background = 'linear-gradient(90deg, #92400e, #f59e0b)';
+      } else {
+        patienceBarEl.style.background = 'linear-gradient(90deg, #c0392b, #ef4444)';
+      }
+
+      if (patience === 0) {
+        patienceMsg.textContent = '🏋️ Le correcteur est parti faire des pompes. Il ne reviendra pas.';
+        patienceMsg.classList.add('show');
+      } else {
+        const idx = Math.floor((100 - patience) / 15);
+        const m = patienceMsgs[Math.min(idx, patienceMsgs.length - 1)];
+        if (m) { patienceMsg.textContent = m; patienceMsg.classList.add('show'); }
+      }
+    }
+
+    // ── Windows 98 popup ──────────────────────────
+    const win98Backdrop = document.getElementById('win98Backdrop');
+    const win98Window   = document.getElementById('win98Window');
+
+    function showWin98() {
+      win98Backdrop.classList.add('show');
+      gsap.fromTo(win98Window,
+        { scale: 0.82, y: -18, opacity: 0 },
+        { scale: 1, y: 0, opacity: 1, duration: 0.26, ease: 'back.out(1.7)' }
+      );
+    }
+
+    function closeWin98() {
+      gsap.to(win98Window, { scale: 0.9, opacity: 0, duration: 0.15, ease: 'power2.in',
+        onComplete: () => win98Backdrop.classList.remove('show')
+      });
+    }
+
+    document.getElementById('win98Cancel').addEventListener('click', () => {
+      closeWin98();
+      showToast('Sage décision. Le jury reprend espoir. 😌');
+    });
+    document.getElementById('win98Suffer').addEventListener('click', () => {
+      closeWin98();
+      showToast('Bien. Vous avez choisi la souffrance. La copie reste éliminatoire. 😔');
+    });
+    document.getElementById('win98CloseBtn').addEventListener('click', closeWin98);
+
+    // ── Option D — évolution du texte ─────────────
+    const dEvolutions = [
+      { text: 'Aller à la salle plutôt que répondre',          note: '↳ Très drôle. Éliminatoire quand même. On ira à la salle APRÈS. 🏋️' },
+      { text: 'Faire un deadlift record (esquive temporaire)',  note: '↳ Un PR ne répond pas à la question. Éliminatoire. 🏋️' },
+      { text: "Partir en stage de chirurgie cardiaque d'urgence", note: "↳ Co\u00efncidence suspecte. L'urgence cardiologique, c'est ICI. ❤️‍🔥" },
+      { text: 'Coloniser Mars pour y ouvrir une salle de sport', note: "↳ La gravit\u00e9 martienne n'excuse pas ce choix. \u00c9liminatoire. 🚀" },
+      { text: 'Devenir ermite en altitude sans réseau',         note: '↳ Les ermites restent éliminés. La réponse est OUI. 😏' },
+    ];
+    let dIdx = 0;
+    const optDTextEl = document.getElementById('optDText');
+    const optDNoteEl = document.getElementById('optDNote');
+
     // ── NON escaladé ─────────────────────────────
     const stamp     = document.getElementById('stamp');
     const examPaper = document.getElementById('examPaper');
@@ -690,6 +1052,18 @@
 
     function triggerFaux(isD) {
       nonClicks++;
+
+      // Evolve option D text
+      if (isD && dIdx < dEvolutions.length - 1) {
+        dIdx++;
+        const ev = dEvolutions[dIdx];
+        gsap.to(optDTextEl, { opacity: 0, duration: 0.12, onComplete: () => {
+          optDTextEl.textContent = ev.text;
+          gsap.to(optDTextEl, { opacity: 1, duration: 0.15 });
+        }});
+        optDNoteEl.textContent = ev.note;
+      }
+
       sndStamp();
       sndError();
       if (navigator.vibrate) navigator.vibrate([70, 40, 70]);
@@ -706,6 +1080,9 @@
 
       if (!isD) nonNoteB.textContent = nonNotes[Math.min(nonClicks - 1, nonNotes.length - 1)];
       showToast(nonToasts[Math.min(nonClicks - 1, nonToasts.length - 1)]);
+
+      updatePatience();
+      if (nonClicks === 5) showWin98();
     }
 
     document.getElementById('optB').addEventListener('click', () => triggerFaux(false));
@@ -790,7 +1167,6 @@
 
         overlay.classList.add('show');
 
-        // GSAP animations inside overlay
         gsap.fromTo('#modal',       { y: 32, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: 'back.out(1.4)' });
         gsap.fromTo(stamp2,         { scale: 2.4, rotation: -20, opacity: 0 }, { scale: 1, rotation: -5, opacity: 1, duration: 0.48, ease: 'back.out(1.8)', delay: 0.2 });
         gsap.fromTo('#gradeRows tr',{ opacity: 0, x: -18 }, { opacity: 1, x: 0, stagger: 0.09, duration: 0.3, delay: 0.45 });
