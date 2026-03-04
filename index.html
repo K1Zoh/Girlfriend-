@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>📝 T'as reçu un mot…</title>
+  <title>📬 Lucie — Convocation d'examen</title>
   <style>
     :root {
       --bg1: #fde8d8;
@@ -16,6 +16,7 @@
       --pink: #ff4f81;
       --pink2: #ff8fab;
       --lines: #d4eaf7;
+      --green: #15803d;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,14 +31,9 @@
       overflow-x: hidden;
     }
 
-    /* ── Floating hearts ─────────────────────── */
+    /* ── Floating hearts ──────────────────────── */
     .hearts { position: fixed; inset: 0; pointer-events: none; opacity: .25; }
-    .heart {
-      position: absolute;
-      font-size: clamp(14px, 2vw, 24px);
-      animation: floatUp linear infinite;
-      user-select: none;
-    }
+    .heart { position: absolute; font-size: clamp(14px, 2vw, 24px); animation: floatUp linear infinite; user-select: none; }
     @keyframes floatUp {
       from { transform: translateY(110vh); opacity: 0; }
       10%  { opacity: 1; }
@@ -64,75 +60,98 @@
 
     /* ── Pages ───────────────────────────────── */
     .page { display: none; }
-    .page.active {
-      display: flex; justify-content: center; align-items: center;
-      min-height: 100svh; padding: 20px;
-    }
-    .fade-in { animation: fadeIn .35s ease-out both; }
+    .page.active { display: flex; justify-content: center; align-items: center; min-height: 100svh; padding: 20px; }
+    .fade-in { animation: fadeIn .4s ease-out both; }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(12px); }
+      from { opacity: 0; transform: translateY(14px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
     /* ══════════════════════════════════════════════
-       PAGE 1 — La note
+       PAGE 1 — Enveloppe
     ══════════════════════════════════════════════ */
-    .note-scene {
-      display: flex; flex-direction: column; align-items: center; gap: 22px;
+    .env-scene { display: flex; flex-direction: column; align-items: center; gap: 26px; }
+
+    /* Perspective wrapper for 3D flap */
+    .env-perspective {
+      perspective: 1400px;
+      perspective-origin: 50% -15%;
     }
 
-    .note {
-      width: min(310px, 84vw);
-      background: #fffef5;
-      background-image: repeating-linear-gradient(
-        transparent, transparent 27px,
-        var(--lines) 27px, var(--lines) 28px
-      );
-      background-position: 0 36px;
-      border-radius: 2px;
-      padding: 26px 22px 34px;
-      box-shadow:
-        2px 3px 0 rgba(0,0,0,.07),
-        8px 12px 34px rgba(0,0,0,.2);
+    .envelope {
+      width: min(350px, 88vw);
+      height: min(230px, 58vw);
       position: relative;
-      transform: rotate(-2deg);
       cursor: pointer;
-      transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s;
       -webkit-tap-highlight-color: transparent;
+      transition: filter .2s;
     }
-    .note:hover, .note:focus-visible {
-      transform: rotate(0deg) scale(1.04);
-      box-shadow: 2px 3px 0 rgba(0,0,0,.07), 14px 20px 52px rgba(0,0,0,.24);
-      outline: none;
+    .envelope:hover { filter: drop-shadow(0 18px 40px rgba(0,0,0,.22)); }
+
+    /* Envelope body */
+    .env-body {
+      position: absolute; inset: 0;
+      background: linear-gradient(165deg, #fdfcf4 0%, #f0ead6 100%);
+      border-radius: 4px;
+      box-shadow: 0 4px 14px rgba(0,0,0,.12), 0 16px 44px rgba(0,0,0,.18);
+      overflow: hidden;
     }
-    /* marge rouge de cahier */
-    .note::before {
-      content: '';
-      position: absolute; top: 0; left: 34px;
-      width: 1.5px; height: 100%;
-      background: rgba(255, 80, 110, .4);
+    /* inner V-fold lines */
+    .env-body::before {
+      content: ''; position: absolute; bottom: 0; left: -5%;
+      width: 60%; height: 1.5px;
+      background: rgba(0,0,0,.09); transform-origin: bottom left; transform: rotate(-38deg);
     }
-    /* coin plié */
-    .note::after {
-      content: '';
-      position: absolute; bottom: 0; right: 0;
-      width: 26px; height: 26px;
-      background: linear-gradient(135deg, transparent 50%, rgba(0,0,0,.1) 50%);
+    .env-body::after {
+      content: ''; position: absolute; bottom: 0; right: -5%;
+      width: 60%; height: 1.5px;
+      background: rgba(0,0,0,.09); transform-origin: bottom right; transform: rotate(38deg);
     }
 
-    .note-to {
-      font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
-      opacity: .4; margin-bottom: 14px; padding-left: 46px;
-      font-family: ui-sans-serif, system-ui, sans-serif;
-    }
-    .note-body {
-      padding-left: 46px;
-      font-size: 15px; line-height: 28px; font-style: italic;
+    .env-address {
+      position: absolute; bottom: 30px; left: 0; right: 0;
+      text-align: center; font-size: clamp(13px, 2.8vw, 17px);
+      font-style: italic; opacity: .65;
     }
 
-    .note-hint {
+    /* Flap — triangle pointing down, folds backward on open */
+    .env-flap {
+      position: absolute; top: -1px; left: -1px; right: -1px;
+      height: 52%;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      background: linear-gradient(170deg, #f5f0e0 0%, #e8e0c6 100%);
+      border-radius: 4px 4px 0 0;
+      transform-origin: top center;
+      transform: rotateX(0deg);
+      transition: transform .75s cubic-bezier(.4, 0, .2, 1);
+      z-index: 2;
+    }
+    .envelope.open .env-flap { transform: rotateX(-178deg); }
+
+    /* Wax seal */
+    .env-seal {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 58px; height: 58px;
+      background: radial-gradient(circle at 35% 35%, #ff6fa0, #c0003c);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 4px 14px rgba(192,0,60,.35), 0 1px 4px rgba(0,0,0,.2);
+      border: 2.5px solid rgba(255,255,255,.35);
+      z-index: 3;
+      transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .25s;
+    }
+    .envelope:hover .env-seal { transform: translate(-50%, -50%) scale(1.07); }
+    .envelope.open .env-seal {
+      transform: translate(-50%, -50%) scale(1.6);
+      opacity: 0;
+      transition: transform .22s ease-in, opacity .18s ease-in;
+    }
+
+    .env-hint {
       font-size: 13px; opacity: .62;
-      background: rgba(255,255,255,.55); padding: 8px 18px;
+      background: rgba(255,255,255,.55); padding: 9px 20px;
       border-radius: 99px; backdrop-filter: blur(6px);
       border: 1px solid rgba(255,255,255,.65);
       font-family: ui-sans-serif, system-ui, sans-serif;
@@ -141,70 +160,52 @@
     /* ══════════════════════════════════════════════
        PAGE 2 — Feuille d'examen
     ══════════════════════════════════════════════ */
-    .exam-wrap { width: min(590px, 92vw); }
+    .exam-wrap { width: min(610px, 92vw); }
 
     .exam-paper {
       background: var(--paper);
       border-radius: 3px;
-      padding: clamp(22px, 5vw, 42px);
-      box-shadow:
-        0 1px 0 rgba(0,0,0,.06),
-        0 4px 10px rgba(0,0,0,.08),
-        0 20px 56px rgba(0,0,0,.2);
+      padding: clamp(20px, 5vw, 40px);
+      box-shadow: 0 1px 0 rgba(0,0,0,.06), 0 4px 10px rgba(0,0,0,.08), 0 22px 60px rgba(0,0,0,.2);
       position: relative;
-      overflow: hidden;
+      overflow: visible; /* allows antisèche to poke out */
     }
 
     /* Watermark */
     .exam-paper::before {
       content: 'CONFIDENTIEL';
-      position: absolute; top: 50%; left: 50%;
+      position: absolute; top: 52%; left: 50%;
       transform: translate(-50%, -50%) rotate(-28deg);
-      font-size: clamp(28px, 6.5vw, 54px);
+      font-size: clamp(24px, 5.5vw, 48px);
       font-weight: 900; letter-spacing: 8px;
-      color: rgba(192, 57, 43, .05);
-      pointer-events: none; user-select: none;
-      white-space: nowrap;
+      color: rgba(192, 57, 43, .045);
+      pointer-events: none; user-select: none; white-space: nowrap;
     }
 
     /* ── Header ───────────────────────────────── */
     .exam-header {
       display: flex; align-items: center; gap: 14px;
-      padding-bottom: 14px;
-      border-bottom: 2.5px solid var(--ink);
-      margin-bottom: 14px;
+      padding-bottom: 14px; border-bottom: 2.5px solid var(--ink); margin-bottom: 14px;
     }
-
-    .seal {
+    .exam-seal {
       width: 54px; height: 54px; flex-shrink: 0;
-      border: 3px solid #7a0000;
-      border-radius: 50%;
+      border: 3px solid #7a0000; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 22px; color: #7a0000;
-      position: relative;
+      font-size: 22px; color: #7a0000; position: relative;
     }
-    .seal::after {
-      content: '';
-      position: absolute; inset: 4px;
-      border: 1.5px dashed #7a0000;
-      border-radius: 50%; opacity: .45;
+    .exam-seal::after {
+      content: ''; position: absolute; inset: 4px;
+      border: 1.5px dashed #7a0000; border-radius: 50%; opacity: .45;
     }
-
     .exam-title { flex: 1; }
-    .exam-title strong {
-      display: block; font-size: clamp(12px, 2.2vw, 14.5px);
-      letter-spacing: .6px; text-transform: uppercase;
-    }
-    .exam-title span {
-      font-size: 11px; opacity: .5; font-style: italic;
-    }
-
+    .exam-title strong { display: block; font-size: clamp(12px, 2.2vw, 14.5px); letter-spacing: .6px; text-transform: uppercase; }
+    .exam-title span { font-size: 11px; opacity: .5; font-style: italic; }
     .photo-box {
       width: 52px; height: 64px; flex-shrink: 0;
       border: 1.5px solid rgba(0,0,0,.22);
       display: flex; align-items: center; justify-content: center;
-      font-size: 9px; opacity: .38; text-align: center;
-      line-height: 1.4; font-family: ui-sans-serif, sans-serif;
+      font-size: 9px; opacity: .38; text-align: center; line-height: 1.4;
+      font-family: ui-sans-serif, sans-serif;
     }
 
     /* ── Meta ─────────────────────────────────── */
@@ -215,16 +216,54 @@
     }
     .field { display: flex; gap: 5px; align-items: baseline; }
     .field-label { opacity: .5; }
-    .field-val {
-      font-weight: 700;
-      border-bottom: 1px solid rgba(0,0,0,.22);
-      padding: 0 4px; min-width: 72px;
-    }
+    .field-val { font-weight: 700; border-bottom: 1px solid rgba(0,0,0,.22); padding: 0 4px; min-width: 60px; }
 
-    hr.sep {
-      border: none; border-top: 1px solid rgba(0,0,0,.14);
-      margin: 10px 0 16px;
+    hr.sep { border: none; border-top: 1px solid rgba(0,0,0,.14); margin: 10px 0 14px; }
+
+    /* ── Rappel important ─────────────────────── */
+    .rappel {
+      border: 1.5px solid var(--ink); border-radius: 2px;
+      padding: 10px 14px; margin-bottom: 16px;
+      font-family: ui-sans-serif, system-ui, sans-serif; font-size: 11px;
+      position: relative;
     }
+    .rappel-title {
+      position: absolute; top: -9px; left: 12px;
+      background: var(--paper); padding: 0 6px;
+      font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .rappel ul { list-style: disc; padding-left: 18px; line-height: 1.75; opacity: .82; }
+
+    /* ── Antisèche (cheat sheet) ──────────────── */
+    .antisec { position: absolute; top: 16px; right: -10px; z-index: 10; }
+    .antisec-tab {
+      width: 36px; height: 36px;
+      background: #fef08a;
+      border-radius: 3px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,.18);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 18px;
+      transform: rotate(5deg);
+      transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .antisec-tab:hover { transform: rotate(0deg) scale(1.12); box-shadow: 3px 3px 14px rgba(0,0,0,.22); }
+    .antisec-content {
+      position: absolute; top: 0; right: calc(100% + 10px);
+      width: min(210px, 60vw);
+      background: #fef9c3;
+      border-radius: 4px; padding: 12px 14px;
+      font-size: 11.5px; font-style: italic;
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      box-shadow: 3px 3px 16px rgba(0,0,0,.2);
+      transform-origin: top right;
+      transform: scale(0); opacity: 0;
+      transition: transform .28s cubic-bezier(.34,1.56,.64,1), opacity .22s;
+      line-height: 1.6; white-space: normal;
+    }
+    .antisec-content.show { transform: scale(1); opacity: 1; }
+    .antisec-content strong { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-style: normal; opacity: .7; }
+    .antisec-close { display: block; text-align: right; margin-top: 8px; cursor: pointer; font-size: 10px; opacity: .55; }
 
     /* ── Question ─────────────────────────────── */
     .q-head {
@@ -233,200 +272,179 @@
       text-transform: uppercase; letter-spacing: 1px;
       opacity: .45; margin-bottom: 10px;
     }
-    .q-text {
-      font-size: clamp(16px, 2.8vw, 20px);
-      font-weight: 700; margin-bottom: 4px; line-height: 1.35;
-    }
-    .q-sub {
-      font-size: clamp(12px, 1.8vw, 13.5px);
-      font-style: italic; opacity: .52;
-      margin-bottom: 22px; font-weight: 400; display: block;
-    }
+    .q-text { font-size: clamp(16px, 2.8vw, 20px); font-weight: 700; margin-bottom: 4px; line-height: 1.35; }
+    .q-sub { font-size: clamp(12px, 1.8vw, 13.5px); font-style: italic; opacity: .52; margin-bottom: 20px; font-weight: 400; display: block; }
 
     /* ── Options ──────────────────────────────── */
-    .options { display: flex; flex-direction: column; gap: 0; }
-
+    .options { display: flex; flex-direction: column; }
     .option {
       display: flex; align-items: flex-start; gap: 11px;
       padding: 9px 10px; border-radius: 6px;
-      transition: background .15s;
+      transition: background .15s; cursor: pointer;
       -webkit-tap-highlight-color: transparent;
-      cursor: pointer;
     }
     .option.non { cursor: default; }
-
-    .option.oui:hover     { background: rgba(255,79,129,.06); }
+    .option.oui:hover      { background: rgba(255,79,129,.06); }
     .option.oui-bleu:hover { background: rgba(37,99,235,.06); }
 
     /* Radio circle */
     .radio {
       width: 18px; height: 18px; border-radius: 50%;
       border: 2px solid rgba(0,0,0,.28);
-      flex-shrink: 0; margin-top: 2px;
-      position: relative;
+      flex-shrink: 0; margin-top: 2px; position: relative;
       transition: border-color .2s;
     }
-    .option.oui:hover .radio     { border-color: var(--pink); }
+    .option.oui:hover .radio      { border-color: var(--pink); }
     .option.oui-bleu:hover .radio { border-color: var(--blue); }
-
-    /* Filled (on click) */
-    .radio::after {
-      content: ''; position: absolute; inset: 3px;
-      border-radius: 50%; transform: scale(0);
-      transition: transform .2s cubic-bezier(.34,1.56,.64,1);
-    }
+    .radio::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; transform: scale(0); transition: transform .22s cubic-bezier(.34,1.56,.64,1); }
     .radio.fill-pink { border-color: var(--pink); }
     .radio.fill-pink::after { background: var(--pink); transform: scale(1); }
     .radio.fill-blue { border-color: var(--blue); }
     .radio.fill-blue::after { background: var(--blue); transform: scale(1); }
 
-    /* Crossed (NON) */
+    /* Crossed radio (NON/D) */
     .radio.crossed { border-color: var(--red); }
     .radio.crossed::before,
-    .radio.crossed::after {
-      content: '';
-      position: absolute; top: 50%; left: 50%;
-      width: 12px; height: 2px;
-      background: var(--red); border-radius: 1px;
-    }
+    .radio.crossed::after { content: ''; position: absolute; top: 50%; left: 50%; width: 12px; height: 2px; background: var(--red); border-radius: 1px; }
     .radio.crossed::before { transform: translate(-50%, -50%) rotate(45deg); }
     .radio.crossed::after  { transform: translate(-50%, -50%) rotate(-45deg); }
 
     .opt-right { flex: 1; }
     .opt-row { display: flex; gap: 8px; align-items: flex-start; }
-
     .opt-letter { font-weight: 700; opacity: .6; flex-shrink: 0; }
     .opt-text { font-size: clamp(13px, 2vw, 15px); line-height: 1.45; }
     .opt-text.blue { color: var(--blue); font-weight: 600; }
-    .opt-text.striked {
-      text-decoration: line-through;
-      text-decoration-color: var(--red);
-      text-decoration-thickness: 2px;
-      opacity: .5;
-    }
+    .opt-text.striked { text-decoration: line-through; text-decoration-color: var(--red); text-decoration-thickness: 2px; opacity: .5; }
 
-    /* Annotation inline (OUI) */
-    .opt-hint {
-      font-size: 11px; font-style: italic;
-      color: var(--red); opacity: 0;
-      transition: opacity .2s; margin-top: 3px;
-      display: block;
-    }
+    /* Hover annotation (OUI) */
+    .opt-hint { font-size: 11px; font-style: italic; color: var(--red); opacity: 0; transition: opacity .2s; margin-top: 3px; display: block; }
     .option:hover .opt-hint { opacity: 1; }
 
-    /* NON annotation — always visible, looks handwritten */
-    .non-note {
-      font-size: 11.5px; font-style: italic;
-      color: var(--red); margin: 2px 0 8px 38px;
-      display: block; opacity: .85;
-    }
+    /* Always-visible annotation (NON/D) */
+    .non-note { font-size: 11px; font-style: italic; color: var(--red); margin: 1px 0 8px 38px; display: block; opacity: .85; line-height: 1.5; }
 
     /* ── FAUX stamp ───────────────────────────── */
     .stamp {
-      position: absolute;
-      top: 48%; left: 56%;
-      transform: translate(-50%, -50%) rotate(-14deg) scale(0);
-      color: var(--red);
-      border: 5px solid var(--red);
-      border-radius: 6px;
-      padding: 7px 18px;
-      font-size: clamp(28px, 6vw, 48px);
-      font-weight: 900; letter-spacing: 6px;
+      position: absolute; top: 48%; left: 54%;
+      transform: translate(-50%, -50%) rotate(-13deg) scale(0);
+      color: var(--red); border: 5px solid var(--red); border-radius: 6px;
+      padding: 7px 18px; font-size: clamp(26px, 5.5vw, 46px);
+      font-weight: 900; letter-spacing: 5px;
       opacity: 0; pointer-events: none; z-index: 5;
-      font-family: ui-sans-serif, system-ui, sans-serif;
-      text-transform: uppercase;
-      transition: transform .2s cubic-bezier(.34,1.56,.64,1), opacity .12s;
+      font-family: ui-sans-serif, system-ui, sans-serif; text-transform: uppercase;
+      transition: transform .22s cubic-bezier(.34,1.56,.64,1), opacity .12s;
       box-shadow: inset 0 0 0 2px rgba(192,57,43,.18);
     }
-    .stamp.show {
-      transform: translate(-50%, -50%) rotate(-14deg) scale(1);
-      opacity: .85;
-    }
+    .stamp.show { transform: translate(-50%, -50%) rotate(-13deg) scale(1); opacity: .88; }
 
     /* Paper shake */
     @keyframes shake {
-      0%,100% { transform: translateX(0) rotate(0); }
-      20%  { transform: translateX(-8px) rotate(-.4deg); }
-      40%  { transform: translateX(8px)  rotate(.4deg); }
-      60%  { transform: translateX(-5px); }
-      80%  { transform: translateX(5px); }
+      0%,100% { transform: none; }
+      20% { transform: translateX(-7px) rotate(-.35deg); }
+      40% { transform: translateX(7px)  rotate(.35deg); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
     }
-    .exam-paper.shake { animation: shake .42s ease-out; }
+    @keyframes shakeBig {
+      0%,100% { transform: none; }
+      15% { transform: translateX(-12px) rotate(-.55deg); }
+      30% { transform: translateX(12px)  rotate(.55deg); }
+      45% { transform: translateX(-9px)  rotate(-.35deg); }
+      60% { transform: translateX(9px)   rotate(.35deg); }
+      75% { transform: translateX(-6px); }
+      90% { transform: translateX(6px); }
+    }
+    .exam-paper.shake     { animation: shake .42s ease-out; }
+    .exam-paper.shake-big { animation: shakeBig .58s ease-out; }
 
     /* ── Footer ───────────────────────────────── */
     .exam-footer {
-      border-top: 1px solid rgba(0,0,0,.12);
-      padding-top: 12px; margin-top: 6px;
-      font-size: 11px; font-style: italic;
-      color: var(--red); opacity: .72;
+      border-top: 1px solid rgba(0,0,0,.12); padding-top: 12px; margin-top: 10px;
+      font-size: 11px; font-style: italic; color: var(--red); opacity: .7;
+      display: flex; justify-content: space-between; gap: 6px; flex-wrap: wrap;
     }
 
     /* ══════════════════════════════════════════════
-       Overlay success
+       Overlay — Bulletin de notes
     ══════════════════════════════════════════════ */
     .overlay {
-      position: fixed; inset: 0;
-      display: none; place-items: center;
-      background: rgba(20, 0, 12, .5);
-      backdrop-filter: blur(10px);
-      padding: 18px; z-index: 30;
+      position: fixed; inset: 0; display: none; place-items: center;
+      background: rgba(20, 0, 12, .52); backdrop-filter: blur(10px);
+      padding: 18px; z-index: 30; overflow-y: auto;
     }
     .overlay.show { display: grid; }
 
     .modal {
-      width: min(420px, 90vw);
-      background: var(--paper);
-      border-radius: 4px;
-      padding: clamp(24px, 5vw, 40px);
-      text-align: center;
-      box-shadow: 0 24px 72px rgba(0,0,0,.3);
+      width: min(520px, 92vw);
+      background: var(--paper); border-radius: 3px;
+      padding: clamp(22px, 5vw, 36px);
+      box-shadow: 0 24px 72px rgba(0,0,0,.32);
       position: relative; overflow: hidden;
+      margin: 20px 0;
     }
-    /* lined paper in modal too */
+    /* lined paper in modal */
     .modal::before {
       content: '';
       position: absolute; inset: 0;
-      background-image: repeating-linear-gradient(
-        transparent, transparent 27px,
-        var(--lines) 27px, var(--lines) 28px
-      );
-      background-position: 0 48px;
-      opacity: .4; pointer-events: none;
+      background-image: repeating-linear-gradient(transparent, transparent 27px, var(--lines) 27px, var(--lines) 28px);
+      background-position: 0 52px; opacity: .3; pointer-events: none;
     }
     .modal > * { position: relative; }
 
+    .modal-header {
+      text-align: center; padding-bottom: 14px;
+      border-bottom: 2.5px solid var(--ink); margin-bottom: 4px;
+    }
+    .modal-header strong { display: block; font-size: clamp(12px, 2.2vw, 14px); text-transform: uppercase; letter-spacing: .6px; }
+    .modal-header span { font-size: 11px; opacity: .5; font-style: italic; }
+
     .admis {
       display: inline-block;
-      border: 5px solid #15803d;
-      border-radius: 6px;
-      color: #15803d;
-      font-size: clamp(22px, 4.5vw, 36px);
+      border: 5px solid var(--green); border-radius: 6px;
+      color: var(--green);
+      font-size: clamp(20px, 4vw, 30px);
       font-weight: 900; letter-spacing: 5px;
-      padding: 7px 18px; margin-bottom: 18px;
-      transform: rotate(-5deg);
-      text-transform: uppercase;
+      padding: 6px 16px; margin: 14px 0 4px;
+      transform: rotate(-5deg); text-transform: uppercase;
       box-shadow: inset 0 0 0 2px rgba(21,128,61,.18);
       font-family: ui-sans-serif, system-ui, sans-serif;
-      animation: stampIn .4s cubic-bezier(.34,1.56,.64,1) both;
+      animation: stampIn .42s cubic-bezier(.34,1.56,.64,1) both;
     }
     @keyframes stampIn {
-      from { transform: rotate(-5deg) scale(1.7); opacity: 0; }
+      from { transform: rotate(-5deg) scale(1.8); opacity: 0; }
       to   { transform: rotate(-5deg) scale(1); opacity: 1; }
     }
 
-    .modal h2 {
-      font-size: clamp(18px, 3.2vw, 25px); margin-bottom: 10px; line-height: 1.3;
+    /* Grade table */
+    .grade-table {
+      width: 100%; border-collapse: collapse;
+      font-size: clamp(11px, 1.8vw, 13px); font-family: ui-sans-serif, system-ui, sans-serif;
+      margin: 14px 0;
     }
-    .modal p { font-size: clamp(13px, 2vw, 15px); line-height: 1.6; opacity: .85; margin-bottom: 6px; }
-    .modal .small { font-size: 12px; opacity: .5; margin-top: 4px; }
+    .grade-table th {
+      border-bottom: 1.5px solid var(--ink); padding: 5px 8px; text-align: left;
+      font-size: 10px; text-transform: uppercase; letter-spacing: .8px; opacity: .5;
+    }
+    .grade-table td { padding: 6px 8px; border-bottom: 1px solid rgba(0,0,0,.07); vertical-align: top; line-height: 1.35; }
+    .grade-table tr:last-child td { border-bottom: none; border-top: 1.5px solid var(--ink); font-weight: 700; padding-top: 8px; }
+    .g-green { color: var(--green); font-weight: 700; }
+    .g-red   { color: var(--red); text-decoration: line-through; opacity: .65; font-size: .95em; }
+
+    /* Professor comment */
+    .prof-comment {
+      border-left: 3px solid var(--red); padding: 8px 12px; margin: 8px 0 14px;
+      font-size: 12px; font-style: italic; color: var(--red);
+      line-height: 1.6; opacity: .88;
+    }
+
+    .modal-footer { text-align: center; }
+    .modal-footer p { font-size: 12px; opacity: .5; margin-bottom: 12px; }
 
     .btn-ok {
-      display: inline-block; margin-top: 18px;
-      border: 0; border-radius: 999px;
-      padding: 12px 30px; font-size: 15px; font-weight: 800;
+      display: inline-block; border: 0; border-radius: 999px;
+      padding: 12px 32px; font-size: 15px; font-weight: 800;
       cursor: pointer; font-family: ui-sans-serif, sans-serif;
-      color: #fff; border: 3px solid rgba(255,255,255,.85);
-      transition: filter .15s;
+      color: #fff; border: 3px solid rgba(255,255,255,.85); transition: filter .15s;
     }
     .btn-ok:active { transform: scale(.97); }
     .btn-ok.pink { background: linear-gradient(180deg, var(--pink), var(--pink2)); box-shadow: 0 10px 28px rgba(255,79,129,.28); }
@@ -441,23 +459,20 @@
   <div class="toast" id="toast"></div>
 
   <!-- ══════════════════════════════════════════
-       PAGE 1 — Le mot plié
+       PAGE 1 — Enveloppe
   ══════════════════════════════════════════ -->
   <div class="page active" id="pageNote">
-    <div class="note-scene fade-in">
-      <div class="note" id="note" role="button" tabindex="0" aria-label="Ouvrir la convocation">
-        <div class="note-to">Lucie — urgent 🖊️</div>
-        <div class="note-body">
-          Tu as un examen<br>
-          très important qui<br>
-          va décider de toute<br>
-          la suite de ton avenir.<br><br>
-          J'espère que tu<br>
-          as bien révisé…<br><br>
-          <em>Bonne chance 😬</em>
+    <div class="env-scene fade-in">
+      <div class="env-perspective">
+        <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Ouvrir l'enveloppe">
+          <div class="env-body">
+            <div class="env-address">Pour &nbsp;Lucie&nbsp; 💌</div>
+          </div>
+          <div class="env-flap"></div>
+          <div class="env-seal" id="envSeal">❤️</div>
         </div>
       </div>
-      <span class="note-hint">✏️ Clique pour commencer</span>
+      <span class="env-hint">💌 Clique sur le cachet pour ouvrir</span>
     </div>
   </div>
 
@@ -470,9 +485,22 @@
 
         <div class="stamp" id="stamp">FAUX</div>
 
+        <!-- Antisèche -->
+        <div class="antisec">
+          <div class="antisec-tab" id="antisecTab" title="Antisèche">📋</div>
+          <div class="antisec-content" id="antisecContent">
+            <strong>📋 Antisèche</strong>
+            (ne pas montrer au jury 🤫)<br><br>
+            La réponse est <strong style="font-style:normal">OUI</strong>.<br>
+            Tu savais déjà ça.<br>
+            C'est pas comme si tu révisais l'anatomie depuis des années pour rien. 💪
+            <span class="antisec-close" id="antisecClose">Fermer ✕</span>
+          </div>
+        </div>
+
         <!-- En-tête -->
         <div class="exam-header">
-          <div class="seal">🎓</div>
+          <div class="exam-seal">🎓</div>
           <div class="exam-title">
             <strong>Université de mon Cœur</strong>
             <span>FAC de mes sentiments &nbsp;·&nbsp; Session Printemps 2026</span>
@@ -487,6 +515,10 @@
             <span class="field-val">Lucie</span>
           </div>
           <div class="field">
+            <span class="field-label">Matière :</span>
+            <span class="field-val">Sentiments Avancés &amp; Biceps</span>
+          </div>
+          <div class="field">
             <span class="field-label">Coefficient :</span>
             <span class="field-val">∞</span>
           </div>
@@ -497,6 +529,16 @@
         </div>
 
         <hr class="sep">
+
+        <!-- Rappel important -->
+        <div class="rappel">
+          <span class="rappel-title">⚠️ Rappel important</span>
+          <ul>
+            <li>Toute réponse B ou D est réputée nulle et éliminatoire — le correcteur a déjà statué.</li>
+            <li>L'usage de l'antisèche (en haut à droite) est toléré, voire fortement conseillé.</li>
+            <li>Ce contrôle ne se récupère pas. Il n'y aura pas de session de rattrapage.</li>
+          </ul>
+        </div>
 
         <!-- Question -->
         <div class="q-head">
@@ -518,7 +560,7 @@
                 <span class="opt-letter">A.</span>
                 <span class="opt-text">OUI je n'attends que ça 💖</span>
               </div>
-              <span class="opt-hint">← hint : c'est la bonne réponse et si tu la choisis tu as 10kg de masse supplémentaire — 20/20 ✓</span>
+              <span class="opt-hint">← Bonne réponse — 20/20 ✓ &nbsp;(+10 kg de masse symbolique garantis)</span>
             </div>
           </div>
 
@@ -532,7 +574,7 @@
               </div>
             </div>
           </div>
-          <span class="non-note">↳ Réponse incorrecte essaye encore — 0/20. Le correcteur a déjà statué. 😬</span>
+          <span class="non-note" id="nonNoteB">↳ Réponse incorrecte — 0/20. Le correcteur a déjà statué. 😬</span>
 
           <!-- C — OUI bleu -->
           <div class="option oui-bleu" id="optC" role="button" tabindex="0">
@@ -546,23 +588,24 @@
             </div>
           </div>
 
-        </div>
-
-          <!-- D — La reponse D -->
+          <!-- D — Aller à la salle -->
           <div class="option non" id="optD" role="button" tabindex="0" aria-disabled="true">
             <div class="radio crossed"></div>
             <div class="opt-right">
               <div class="opt-row">
                 <span class="opt-letter">D.</span>
-                <span class="opt-text striked">La réponse D</span>
+                <span class="opt-text striked">Aller à la salle plutôt que répondre</span>
               </div>
             </div>
           </div>
-          <span class="non-note">↳ Alors très drole mais réponse incorecte — 0/20.</span>
+          <span class="non-note">↳ Très drôle. Éliminatoire quand même. On ira à la salle APRÈS. 🏋️</span>
+
+        </div>
 
         <!-- Pied de page -->
         <div class="exam-footer">
-          Note du correcteur : deux bonnes réponses existent. deux mauvaises, déjà éliminées. Bonne chance 😌
+          <span>Pr. Matthieu le mec aux gros bras — Maître de Conférences en Sentiments Avancés</span>
+          <span>Deux bonnes réponses. Deux mauvaises. Choisir avec soin. 😌</span>
         </div>
 
       </div>
@@ -570,35 +613,98 @@
   </div>
 
   <!-- ══════════════════════════════════════════
-       Overlay succès
+       Overlay — Bulletin de notes
   ══════════════════════════════════════════ -->
   <div class="overlay" id="overlay" role="dialog" aria-modal="true">
     <div class="modal">
-      <div class="admis" id="admisStamp">ADMIS(E)</div>
-      <h2 id="modalTitle">Donc c'est OUI alors !!!! 🥹</h2>
-      <p>Ok c'est officiel — mention Très Bien.</p>
-      <p class="small">Bon chance pour me supporter ❤️</p>
-      <button class="btn-ok pink" id="btnClose" type="button">🥰</button>
+
+      <div class="modal-header">
+        <strong>Université de mon Cœur — FAC de mes sentiments</strong>
+        <span>Relevé de notes officiel &nbsp;·&nbsp; Session Printemps 2026</span>
+        <br>
+        <div class="admis" id="admisStamp">ADMIS(E)</div>
+      </div>
+
+      <table class="grade-table">
+        <thead>
+          <tr>
+            <th>Matière</th>
+            <th>Note</th>
+            <th>Appréciation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Anatomie du cœur (sens littéral)</td>
+            <td class="g-green">20/20</td>
+            <td>Excellente maîtrise</td>
+          </tr>
+          <tr>
+            <td>Sémiologie des sentiments</td>
+            <td class="g-green">20/20</td>
+            <td>Diagnostic parfait</td>
+          </tr>
+          <tr>
+            <td>Musculation du couple (UE obligatoire)</td>
+            <td class="g-green">20/20</td>
+            <td>Technique irréprochable</td>
+          </tr>
+          <tr>
+            <td>Physiologie de l'amour</td>
+            <td class="g-green">20/20</td>
+            <td>Très bien</td>
+          </tr>
+          <tr>
+            <td>Camaraderie fictive (option abandonnée)</td>
+            <td class="g-red">0/20</td>
+            <td style="opacity:.45;font-style:italic">Non pertinente</td>
+          </tr>
+          <tr>
+            <td>Moyenne générale</td>
+            <td class="g-green">20/20</td>
+            <td>Mention Très Bien 🏆</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="prof-comment" id="profComment">
+        "Lucie a su identifier avec une précision clinique remarquable la seule réponse valide à cette épreuve.
+        Sa capacité à prendre les bonnes décisions — qualité indispensable en médecine comme en couple — est ici parfaitement démontrée.
+        Ses biceps aussi sont une valeur ajoutée non négligeable.
+        Le jury félicite chaleureusement l'étudiante et lui souhaite une excellente suite de programme."
+        <br><br>
+        <em>— Pr. Matthieu le mec aux gros bras, Maître de Conférences en Sentiments Avancés</em>
+      </div>
+
+      <div class="modal-footer">
+        <p>J'espère t'avoir fait sourire ❤️</p>
+        <button class="btn-ok pink" id="btnClose" type="button">🥰</button>
+      </div>
+
     </div>
   </div>
 
   <script>
     // ── Pages ─────────────────────────────────────
-    const note     = document.getElementById('note');
+    const envelope = document.getElementById('envelope');
     const pageNote = document.getElementById('pageNote');
     const pageQ    = document.getElementById('pageQuestion');
 
-    function openQuestion() {
-      pageNote.classList.remove('active');
-      pageQ.classList.add('active', 'fade-in');
-      setTimeout(() => document.getElementById('optA').focus(), 80);
+    function openEnvelope() {
+      envelope.classList.add('open');
+      envelope.style.pointerEvents = 'none';
+      setTimeout(() => {
+        pageNote.classList.remove('active');
+        pageQ.classList.add('active', 'fade-in');
+        setTimeout(() => document.getElementById('optA').focus(), 80);
+      }, 950);
     }
-    note.addEventListener('click', openQuestion);
-    note.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openQuestion(); }
+    envelope.addEventListener('click', openEnvelope);
+    envelope.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openEnvelope(); }
     });
 
-    // ── Floating hearts ──────────────────────────
+    // ── Floating hearts ───────────────────────────
     const heartsEl   = document.getElementById('hearts');
     const heartChars = ['💖','💘','💝','💗','✨','❤️','🌸','💕'];
     function makeHeart() {
@@ -616,47 +722,72 @@
     setInterval(makeHeart, 500);
 
     // ── Toast ─────────────────────────────────────
-    const toast    = document.getElementById('toast');
+    const toast = document.getElementById('toast');
     let toastTimer;
-    const toastMsgs = [
-      'Le correcteur a déjà tranché 😌',
-      'Réponse non disponible ce semestre',
-      '0/20 — peut mieux faire 😬',
-      'Option supprimée du barème',
-      'Résultat : éliminatoire. Réessaie.',
-      'Sérieusement ? 😅',
-    ];
-    let toastIdx = 0;
-    function showToast() {
-      toast.textContent = toastMsgs[Math.min(toastIdx++, toastMsgs.length - 1)];
+    function showToast(msg) {
+      toast.textContent = msg;
       toast.classList.add('show');
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2700);
     }
 
-    // ── NON ───────────────────────────────────────
+    // ── Antisèche ─────────────────────────────────
+    document.getElementById('antisecTab').addEventListener('click', e => {
+      e.stopPropagation();
+      document.getElementById('antisecContent').classList.toggle('show');
+    });
+    document.getElementById('antisecClose').addEventListener('click', e => {
+      e.stopPropagation();
+      document.getElementById('antisecContent').classList.remove('show');
+    });
+
+    // ── NON escaladé ─────────────────────────────
     const stamp     = document.getElementById('stamp');
     const examPaper = document.getElementById('examPaper');
+    const nonNoteB  = document.getElementById('nonNoteB');
     let stampTimer;
+    let nonClicks = 0;
 
-    function triggerFaux() {
+    const nonToasts = [
+      'Le correcteur a déjà tranché 😌',
+      'Diagnostic : réponse incorrecte. Prescription : recommencer.',
+      '0/20 — résultat éliminatoire. Sérieusement.',
+      'Cette tentative a été signalée au jury. 😬',
+      'L\'examen est suspendu pour tentative de fraude.',
+      'Tu sais très bien ce que tu dois faire. 😏',
+    ];
+    const nonNotes = [
+      '↳ Réponse incorrecte — 0/20. Le correcteur a déjà statué. 😬',
+      '↳ Toujours faux. On te l\'avait prévenu. Résultat : éliminatoire.',
+      '↳ 3ème tentative notée. Signalement au jury en cours...',
+      '↳ Le jury est épuisé. Merci de choisir A ou C. 🙏',
+    ];
+
+    function triggerFaux(isD) {
+      nonClicks++;
+      stamp.textContent = nonClicks >= 4 ? 'COPIE NULLE' : 'FAUX';
+      stamp.classList.remove('show');
+      void stamp.offsetWidth;
       stamp.classList.add('show');
       clearTimeout(stampTimer);
-      stampTimer = setTimeout(() => stamp.classList.remove('show'), 1500);
+      stampTimer = setTimeout(() => stamp.classList.remove('show'), 1600);
 
-      examPaper.classList.remove('shake');
+      const shakeClass = nonClicks >= 3 ? 'shake-big' : 'shake';
+      examPaper.classList.remove('shake', 'shake-big');
       void examPaper.offsetWidth;
-      examPaper.classList.add('shake');
-      examPaper.addEventListener('animationend', () => examPaper.classList.remove('shake'), { once: true });
+      examPaper.classList.add(shakeClass);
+      examPaper.addEventListener('animationend', () => examPaper.classList.remove('shake', 'shake-big'), { once: true });
 
-      showToast();
+      if (!isD) {
+        nonNoteB.textContent = nonNotes[Math.min(nonClicks - 1, nonNotes.length - 1)];
+      }
+      showToast(nonToasts[Math.min(nonClicks - 1, nonToasts.length - 1)]);
     }
 
-    const optB = document.getElementById('optB');
-    optB.addEventListener('click', triggerFaux);
-    optB.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); triggerFaux(); }
-    });
+    document.getElementById('optB').addEventListener('click', () => triggerFaux(false));
+    document.getElementById('optD').addEventListener('click', () => triggerFaux(true));
+    document.getElementById('optB').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); triggerFaux(false); } });
+    document.getElementById('optD').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); triggerFaux(true); } });
 
     // ── Confetti ──────────────────────────────────
     const confettiEl = document.getElementById('confetti');
@@ -678,10 +809,10 @@
       const colors = isBlue
         ? ['rgba(37,99,235,.88)', 'rgba(147,197,253,.88)']
         : ['rgba(255,79,129,.88)', 'rgba(255,143,171,.88)'];
-      for (let i = 0; i < 210; i++) {
+      for (let i = 0; i < 220; i++) {
         particles.push({
           x: Math.random() * w, y: -20 - Math.random() * h * .2,
-          vx: (Math.random() - .5) * 3.2, vy: 2.4 + Math.random() * 4.8,
+          vx: (Math.random() - .5) * 3.2, vy: 2.5 + Math.random() * 4.8,
           r: 8 + Math.random() * 18, rot: Math.random() * Math.PI * 2,
           vr: (Math.random() - .5) * .22, a: 1,
           color: colors[Math.floor(Math.random() * 2)],
@@ -717,29 +848,26 @@
     const overlay = document.getElementById('overlay');
 
     function handleOui(isBlue, radioId) {
-      const radio = document.getElementById(radioId);
-      radio.classList.add(isBlue ? 'fill-blue' : 'fill-pink');
+      document.getElementById(radioId).classList.add(isBlue ? 'fill-blue' : 'fill-pink');
 
       setTimeout(() => {
-        const title  = document.getElementById('modalTitle');
-        const stamp2 = document.getElementById('admisStamp');
-        const btn    = document.getElementById('btnClose');
+        const stamp2   = document.getElementById('admisStamp');
+        const btn      = document.getElementById('btnClose');
+        const comment  = document.getElementById('profComment');
 
         if (isBlue) {
-          title.textContent  = 'Donc c\'est OUI (en bleu) alors !!!! 💙';
-          stamp2.textContent = 'ADMIS(E)';
           stamp2.style.color       = '#1d4ed8';
           stamp2.style.borderColor = '#1d4ed8';
-          btn.className = 'btn-ok blue';
+          btn.className            = 'btn-ok blue';
+          comment.style.borderLeftColor = '#2563eb';
         } else {
-          title.textContent  = 'Donc c\'est OUI alors !!!! 🥹';
-          stamp2.textContent = 'ADMIS(E)';
           stamp2.style.color       = '';
           stamp2.style.borderColor = '';
-          btn.className = 'btn-ok pink';
+          btn.className            = 'btn-ok pink';
+          comment.style.borderLeftColor = '';
         }
 
-        // force re-animation of stamp
+        // re-déclenche l'animation du tampon
         stamp2.style.animation = 'none';
         void stamp2.offsetWidth;
         stamp2.style.animation = '';
@@ -748,24 +876,18 @@
         confettiEl.classList.add('show');
         spawnConfetti(isBlue);
         if (!animId) confettiLoop();
-        for (let i = 0; i < 14; i++) setTimeout(makeHeart, i * 75);
+        for (let i = 0; i < 16; i++) setTimeout(makeHeart, i * 70);
       }, 380);
     }
 
     document.getElementById('optA').addEventListener('click', () => handleOui(false, 'radioA'));
-    document.getElementById('optC').addEventListener('click', () => handleOui(true, 'radioC'));
-    document.getElementById('optA').addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleOui(false, 'radioA'); }
-    });
-    document.getElementById('optC').addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleOui(true, 'radioC'); }
-    });
+    document.getElementById('optC').addEventListener('click', () => handleOui(true,  'radioC'));
+    document.getElementById('optA').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleOui(false, 'radioA'); } });
+    document.getElementById('optC').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleOui(true,  'radioC'); } });
 
     // ── Fermer overlay ────────────────────────────
     document.getElementById('btnClose').addEventListener('click', () => overlay.classList.remove('show'));
-    overlay.addEventListener('click', e => {
-      if (e.target === overlay) overlay.classList.remove('show');
-    });
+    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('show'); });
   </script>
 </body>
 </html>
