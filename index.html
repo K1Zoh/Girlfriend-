@@ -430,6 +430,18 @@
       transform: translate(1px, 1px);
     }
     .win98-btn:focus { outline: 1px dotted #000; outline-offset: -4px; }
+
+    /* ── Cursor heart trail ──────────────────────── */
+    .cursor-heart {
+      position: fixed; pointer-events: none; z-index: 1000;
+      user-select: none; line-height: 1;
+      animation: cursorHeartFloat 0.72s ease-out forwards;
+    }
+    @keyframes cursorHeartFloat {
+      0%   { opacity: .95; transform: translate(-50%, -50%) scale(1)   rotate(0deg); }
+      60%  { opacity: .6;  transform: translate(-50%, -80%) scale(.65) rotate(12deg); }
+      100% { opacity: 0;   transform: translate(-50%,-120%) scale(.2)  rotate(22deg); }
+    }
   </style>
 </head>
 <body>
@@ -471,9 +483,9 @@
           <p>Ce qui prouve que tu as de la curiosité. Bonne chose.</p>
           <p>&nbsp;</p>
           <p>Tu suis une des formations les plus dures de France.</p>
-          <p>Tu soulèves des barres que la plupart des gens regardent avec respect — et recul.</p>
+          <p>Tu soulèves des barres que la plupart des gens regardent avec respect et recul.</p>
           <p>&nbsp;</p>
-          <p>Et pourtant, là — tu vas passer l'épreuve la plus importante de ta vie.</p>
+          <p>Et pourtant, là, tu vas passer l'épreuve la plus importante de ta vie.</p>
           <p><em style="font-size:.9em;opacity:.65;">(C'est moi qui l'ai dit. Donc c'est officiel.)</em></p>
           <p>&nbsp;</p>
           <p>J'aurais pu faire un discours romantique.</p>
@@ -483,7 +495,7 @@
           <p>Bonne chance. <em style="font-size:.88em;opacity:.6;">(Tu n'en auras pas besoin.)</em></p>
         </div>
         <div class="letter-sig">
-          — Matthieu<br>
+          Matthieu<br>
           <span style="font-size:.85em;opacity:.6;">le mec aux gros bras &nbsp;💪❤️</span>
         </div>
         <button class="letter-continue" id="letterContinue">Passer l'épreuve →</button>
@@ -564,7 +576,7 @@
         <div class="rappel">
           <span class="rappel-title">⚠️ Rappel important</span>
           <ul>
-            <li>Toute réponse B ou D est réputée nulle et éliminatoire — le correcteur a déjà statué.</li>
+            <li>Toute réponse B ou D est réputée nulle et éliminatoire. Le correcteur a déjà statué.</li>
             <li>L'usage de l'antisèche (en haut à droite) est toléré, voire fortement conseillé.</li>
             <li>Ce contrôle ne se récupère pas. Il n'y aura pas de session de rattrapage.</li>
           </ul>
@@ -581,13 +593,13 @@
           </div>
           <div class="reglement-body" id="reglementBody">
             <div class="reglement-content">
-              <p><strong>Art. 1</strong> — Le présent règlement s'applique à toute épreuve sentimentale de coefficient infini, sans exception, y compris les jours de compétition.</p>
-              <p><strong>Art. 3</strong> — Tout sentiment non exprimé dans les délais impartis est soumis à une majoration de 20% d'attentes non formulées, à la charge exclusive du jury.</p>
-              <p><strong>Art. 7</strong> — Les biceps constituent un argument juridique recevable dans le présent établissement, sous réserve que leur propriétaire soit également Matthieu.</p>
-              <p><strong>Art. 12</strong> — La « camaraderie fictive » est par la présente officiellement dissoute. Toute tentative de la maintenir sera traitée comme une fraude académique de premier degré.</p>
-              <p><strong>Art. 15</strong> — Le jury (Matthieu) se réserve le droit de faire des tractions en cas de réponse correcte, à titre de célébration institutionnelle.</p>
-              <p><strong>Art. 18</strong> — En cas de réponse B ou D répétée, l'étudiante sera conviée à un entretien individuel non optionnel portant sur ses choix de vie et son niveau d'auto-sabotage.</p>
-              <p><strong>Art. 23</strong> — Le présent règlement prévaut sur toute notion de logique, de doute ou de mauvaise foi. Le jury a toujours raison. Sauf s'il a tort, auquel cas il ira à la salle.</p>
+              <p><strong>Art. 1</strong> : Le présent règlement s'applique à toute épreuve sentimentale de coefficient infini, sans exception, y compris les jours de compétition.</p>
+              <p><strong>Art. 3</strong> :Tout sentiment non exprimé dans les délais impartis est soumis à une majoration de 20% d'attentes non formulées, à la charge exclusive du jury.</p>
+              <p><strong>Art. 7</strong> :Les biceps constituent un argument juridique recevable dans le présent établissement, sous réserve que leur propriétaire soit également Matthieu.</p>
+              <p><strong>Art. 12</strong> :La « camaraderie fictive » est par la présente officiellement dissoute. Toute tentative de la maintenir sera traitée comme une fraude académique de premier degré.</p>
+              <p><strong>Art. 15</strong> :Le jury (Matthieu) se réserve le droit de faire des tractions en cas de réponse correcte, à titre de célébration institutionnelle.</p>
+              <p><strong>Art. 18</strong> :En cas de réponse B ou D répétée, l'étudiante sera conviée à un entretien individuel non optionnel portant sur ses choix de vie et son niveau d'auto-sabotage.</p>
+              <p><strong>Art. 23</strong> :Le présent règlement prévaut sur toute notion de logique, de doute ou de mauvaise foi. Le jury a toujours raison. Sauf s'il a tort, auquel cas il ira à la salle.</p>
             </div>
           </div>
         </div>
@@ -607,7 +619,7 @@
             <div class="radio" id="radioA"></div>
             <div class="opt-right">
               <div class="opt-row"><span class="opt-letter">A.</span><span class="opt-text">OUI je n'attends que ça 💖</span></div>
-              <span class="opt-hint">← Bonne réponse — 20/20 ✓ &nbsp;(+10 kg de masse symbolique garantis)</span>
+              <span class="opt-hint">← Bonne réponse · 20/20 ✓ &nbsp;(+10 kg de masse symbolique garantis)</span>
             </div>
           </div>
 
@@ -617,13 +629,13 @@
               <div class="opt-row"><span class="opt-letter">B.</span><span class="opt-text striked">NON je pense que tu es mieux en camarade de classe fictif</span></div>
             </div>
           </div>
-          <span class="non-note" id="nonNoteB">↳ Réponse incorrecte — 0/20. Le correcteur a déjà statué. 😬</span>
+          <span class="non-note" id="nonNoteB">↳ Réponse incorrecte · 0/20. Le correcteur a déjà statué. 😬</span>
 
           <div class="option oui-bleu" id="optC" role="button" tabindex="0">
             <div class="radio" id="radioC"></div>
             <div class="opt-right">
               <div class="opt-row"><span class="opt-letter">C.</span><span class="opt-text blue">OUI mais en bleu</span></div>
-              <span class="opt-hint">← Aussi accepté — 20/20 ✓</span>
+              <span class="opt-hint">← Aussi accepté · 20/20 ✓</span>
             </div>
           </div>
 
@@ -639,7 +651,7 @@
 
         <!-- Footer -->
         <div class="exam-footer">
-          <span>Pr. Matthieu le mec aux gros bras — Maître de Conférences en Sentiments Avancés</span>
+          <span>Pr. Matthieu le mec aux gros bras, Maître de Conférences en Sentiments Avancés</span>
           <span>Deux bonnes réponses. Deux mauvaises. Choisir avec soin. 😌</span>
         </div>
 
@@ -654,7 +666,7 @@
     <div class="modal" id="modal">
 
       <div class="modal-header">
-        <strong>Université de mon Cœur — FAC de mes sentiments</strong>
+        <strong>Université de mon Cœur · FAC de mes sentiments</strong>
         <span>Relevé de notes officiel &nbsp;·&nbsp; Session Printemps 2026</span>
         <br>
         <div class="admis" id="admisStamp">ADMIS(E)</div>
@@ -676,15 +688,15 @@
 
       <div class="prof-comment" id="profComment">
         "Lucie a su identifier avec une précision clinique remarquable la seule réponse valide à cette épreuve.
-        Sa capacité à prendre les bonnes décisions — qualité indispensable en médecine comme en couple — est ici parfaitement démontrée.
+        Sa capacité à prendre les bonnes décisions, qualité indispensable en médecine comme en couple, est ici parfaitement démontrée.
         Ses biceps aussi sont une valeur ajoutée non négligeable pour la suite du programme.
         Le jury félicite chaleureusement l'étudiante."
         <br><br>
-        <em>— Pr. Matthieu le mec aux gros bras, Maître de Conférences en Sentiments Avancés</em>
+        <em>Pr. Matthieu le mec aux gros bras, Maître de Conférences en Sentiments Avancés</em>
       </div>
 
       <div class="modal-footer">
-        <p>J'espère t'avoir fait sourire ❤️</p>
+        <p>finalement ce DM on en pense quoi ? 😌</p>
         <button class="btn-ok pink" id="btnClose" type="button">🥰</button>
       </div>
 
@@ -865,6 +877,11 @@
       const paper = document.getElementById('letterPaper');
       gsap.set(paper, { y: 38, opacity: 0, rotation: -1 });
       gsap.to(paper, { y: 0, opacity: 1, rotation: 0, duration: 0.6, ease: 'back.out(1.4)', delay: 0.05 });
+
+      // Staggered line reveal — like reading a letter being written
+      const lines = paper.querySelectorAll('.letter-date, .letter-body p, .letter-sig, .letter-continue');
+      gsap.set(lines, { opacity: 0, y: 7 });
+      gsap.to(lines, { opacity: 1, y: 0, stagger: 0.09, duration: 0.32, delay: 0.55, ease: 'power2.out' });
     }
 
     document.getElementById('letterContinue').addEventListener('click', () => {
@@ -1038,13 +1055,13 @@
     const nonToasts = [
       'Le correcteur a déjà tranché 😌',
       'Diagnostic : réponse incorrecte. Prescription : recommencer.',
-      '0/20 — résultat éliminatoire. Sérieusement.',
+      '0/20 · résultat éliminatoire. Sérieusement.',
       'Cette tentative a été signalée au jury. 😬',
       "L'examen est suspendu pour tentative de fraude.",
       'Tu sais très bien ce que tu dois faire. 😏',
     ];
     const nonNotes = [
-      '↳ Réponse incorrecte — 0/20. Le correcteur a déjà statué. 😬',
+      '↳ Réponse incorrecte · 0/20. Le correcteur a déjà statué. 😬',
       '↳ Toujours faux. On te l\'avait prévenu. Résultat : éliminatoire.',
       '↳ 3ème tentative notée. Signalement au jury en cours…',
       '↳ Le jury est épuisé. Merci de choisir A ou C. 🙏',
@@ -1186,6 +1203,36 @@
 
     document.getElementById('btnClose').addEventListener('click', () => overlay.classList.remove('show'));
     overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('show'); });
+
+    // ── Cursor heart trail ────────────────────────
+    const trailEmojis = ['❤️','💕','💖','✨','💗','🌸'];
+    let lastTrail = 0;
+
+    function spawnTrailHeart(x, y) {
+      const el = document.createElement('div');
+      el.className = 'cursor-heart';
+      el.textContent = trailEmojis[Math.floor(Math.random() * trailEmojis.length)];
+      el.style.left = x + 'px';
+      el.style.top  = y + 'px';
+      el.style.fontSize = (8 + Math.random() * 10) + 'px';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 740);
+    }
+
+    document.addEventListener('mousemove', e => {
+      const now = Date.now();
+      if (now - lastTrail < 65) return;
+      lastTrail = now;
+      spawnTrailHeart(e.clientX, e.clientY);
+    });
+
+    document.addEventListener('touchmove', e => {
+      const now = Date.now();
+      if (now - lastTrail < 80) return;
+      lastTrail = now;
+      const t = e.touches[0];
+      spawnTrailHeart(t.clientX, t.clientY);
+    }, { passive: true });
   </script>
 </body>
 </html>
