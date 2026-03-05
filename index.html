@@ -3,6 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!--
+    Félicitations.
+    Tu inspectes le code source. Évidemment.
+    Médecine + curiosité + biceps = combinaison dangereuse.
+
+    Si tu lis ça, sache que la réponse correcte était OUI
+    bien avant que tu ouvres cette page.
+
+    — Matthieu, ingé cyber le plus stock de France (autoproclamé) 💪❤️
+  -->
   <title>📬 Lucie — Convocation urgente</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -647,6 +657,17 @@
       opacity: .3; transition: opacity .2s;
     }
     .epilogue-close-btn:hover { opacity: .65; }
+
+    /* ── OUI hover sparkle ───────────────────────── */
+    .oui-sparkle {
+      position: fixed; pointer-events: none; z-index: 999;
+      user-select: none; line-height: 1;
+      animation: ouiSparkle 0.65s ease-out forwards;
+    }
+    @keyframes ouiSparkle {
+      0%   { opacity: 1;   transform: translate(-50%,-50%) scale(1)   rotate(0deg); }
+      100% { opacity: 0;   transform: translate(-50%,-200%) scale(.3) rotate(25deg); }
+    }
   </style>
 </head>
 <body>
@@ -954,9 +975,9 @@
       <button class="epilogue-close-btn" id="epilogueClose" aria-label="Fermer">✕</button>
       <span class="epilogue-heart">💖</span>
       <div class="epilogue-title">Voilà. C'est tout.</div>
-      <p class="epilogue-text">Je pouvais pas juste envoyer un message normal.</p>
-      <p class="epilogue-text">Faut croire que t'en valais la peine.</p>
-      <p class="epilogue-name">— Matthieu 💪❤️</p>
+      <p class="epilogue-text">Je pouvais pas juste envoyer un message normal. Tu sais bien que je suis un peu perché.</p>
+      <p class="epilogue-text">Si jamais tu avais des doutes, tu es special et tu compte beaucoup pour moi</p>
+      <p class="epilogue-name">— Matthieu (le mec le plus baleze que tu connaisses) ❤️</p>
     </div>
   </div>
 
@@ -1037,6 +1058,21 @@
         const g = a.createGain(); g.gain.setValueAtTime(0.055, a.currentTime); g.gain.exponentialRampToValueAtTime(0.001, a.currentTime + 0.18);
         src.connect(flt); flt.connect(g); g.connect(a.destination);
         src.start(); src.stop(a.currentTime + 0.22);
+      });
+    }
+
+    function sndKeyClick() {
+      play(a => {
+        const n = Math.floor(a.sampleRate * 0.022);
+        const buf = a.createBuffer(1, n, a.sampleRate);
+        const d = buf.getChannelData(0);
+        for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+        const src = a.createBufferSource(); src.buffer = buf;
+        const flt = a.createBiquadFilter(); flt.type = 'highpass'; flt.frequency.value = 900; flt.Q.value = 0.5;
+        const g = a.createGain(); g.gain.setValueAtTime(0.028, a.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, a.currentTime + 0.018);
+        src.connect(flt); flt.connect(g); g.connect(a.destination);
+        src.start(); src.stop(a.currentTime + 0.025);
       });
     }
 
@@ -1232,6 +1268,7 @@
     // ── Letter page ───────────────────────────────
     function showLetter() {
       pageLetter.classList.add('active');
+      document.title = "💌 Pour Lucie";
       const paper = document.getElementById('letterPaper');
       gsap.set(paper, { y: 38, opacity: 0, rotation: -1 });
       gsap.to(paper, { y: 0, opacity: 1, rotation: 0, duration: 0.6, ease: 'back.out(1.4)', delay: 0.05 });
@@ -1299,6 +1336,7 @@
           if (cancelled) return;
           if (charIdx < chars.length) {
             cursor.before(document.createTextNode(chars[charIdx++]));
+            if (Math.random() < 0.32) sndKeyClick();
             const t = setTimeout(typeChar, speed + Math.random() * 8);
             typerTimeouts.push(t);
           } else {
@@ -1333,6 +1371,7 @@
 
     function startLoading() {
       pageLoading.classList.add('active');
+      document.title = "📋 Chargement de l'épreuve…";
       const paper = document.getElementById('loadingPaper');
       const bar   = document.getElementById('loadingBar');
       const msg   = document.getElementById('loadingMsg');
@@ -1365,6 +1404,7 @@
 
     // ── Exam entrance ─────────────────────────────
     function animateExamIn() {
+      document.title = "✏️ Examen en cours · 20 pts";
       const paper = document.getElementById('examPaper');
       gsap.set(paper, { y: 55, opacity: 0 });
       gsap.to(paper, { y: 0, opacity: 1, duration: 0.55, ease: 'back.out(1.4)', delay: 0.05 });
@@ -1638,6 +1678,7 @@
 
     function handleOui(isBlue, radioId) {
       document.getElementById(radioId).classList.add(isBlue ? 'fill-blue' : 'fill-pink');
+      document.title = "🎉 20/20 — Mention Très Bien !";
       sndSuccess();
       clearInterval(examTimerInterval); examTimerInterval = null;
       launchFireworks();
@@ -1870,6 +1911,7 @@
 
     // ── Épilogue ──────────────────────────────────
     function showEpilogue() {
+      document.title = "✨ Fin · Matthieu ❤️ Lucie";
       const epOverlay = document.getElementById('epilogueOverlay');
       const epCard    = document.getElementById('epilogueCard');
       epOverlay.classList.add('show');
@@ -1884,6 +1926,26 @@
       gsap.to(epCard, { opacity: 0, y: -20, duration: 0.3, ease: 'power2.in',
         onComplete: () => document.getElementById('epilogueOverlay').classList.remove('show')
       });
+    });
+
+    // ── OUI hover sparkle ─────────────────────────
+    const ouiSparkleChars = ['✨','⭐','💫','🌟','💖','✦','💗'];
+    let lastOuiSparkle = 0;
+    function spawnOuiSparkle(x, y) {
+      const now = Date.now();
+      if (now - lastOuiSparkle < 45) return;
+      lastOuiSparkle = now;
+      const el = document.createElement('div');
+      el.className = 'oui-sparkle';
+      el.textContent = ouiSparkleChars[Math.floor(Math.random() * ouiSparkleChars.length)];
+      el.style.left = (x + (Math.random() - 0.5) * 50) + 'px';
+      el.style.top  = (y + (Math.random() - 0.5) * 24) + 'px';
+      el.style.fontSize = (10 + Math.random() * 9) + 'px';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 700);
+    }
+    ['optA', 'optC'].forEach(id => {
+      document.getElementById(id).addEventListener('mousemove', e => spawnOuiSparkle(e.clientX, e.clientY));
     });
 
     // ── Notification banner intro ─────────────────
