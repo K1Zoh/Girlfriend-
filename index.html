@@ -19,8 +19,14 @@
     body {
       min-height: 100svh; display: grid; place-items: center;
       font-family: "Georgia", ui-serif, serif; color: var(--ink);
-      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      background: linear-gradient(135deg, var(--bg1), #fcd4e8, var(--bg2), var(--bg1));
+      background-size: 300% 300%;
+      animation: auroraShift 16s ease infinite;
       overflow-x: hidden;
+    }
+    @keyframes auroraShift {
+      0%, 100% { background-position: 0% 50%; }
+      50%       { background-position: 100% 50%; }
     }
 
     /* ── Hearts ─────────────────────────────────── */
@@ -562,11 +568,99 @@
       60%  { opacity: .6;  transform: translate(-50%, -80%) scale(.65) rotate(12deg); }
       100% { opacity: 0;   transform: translate(-50%,-120%) scale(.2)  rotate(22deg); }
     }
+
+    /* ── Notification banner ─────────────────────── */
+    .notif-banner {
+      position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+      width: min(360px, 92vw); margin-top: 14px;
+      background: rgba(255,255,255,.93); backdrop-filter: blur(20px);
+      border-radius: 16px; padding: 12px 16px;
+      display: flex; gap: 12px; align-items: center;
+      box-shadow: 0 8px 30px rgba(0,0,0,.16);
+      z-index: 200; pointer-events: none;
+      font-family: ui-sans-serif, -apple-system, sans-serif;
+    }
+    .notif-icon { font-size: 30px; flex-shrink: 0; line-height: 1; }
+    .notif-content { flex: 1; min-width: 0; }
+    .notif-app  { font-size: 10px; font-weight: 700; opacity: .45; text-transform: uppercase; letter-spacing: .7px; margin-bottom: 3px; }
+    .notif-msg  { font-size: 13px; font-weight: 500; line-height: 1.35; }
+    .notif-time { font-size: 11px; opacity: .38; flex-shrink: 0; align-self: flex-start; margin-top: 2px; }
+
+    /* ── Typewriter cursor ───────────────────────── */
+    .typing-cursor {
+      display: inline-block; color: var(--ink); opacity: 1;
+      animation: cursorBlink .7s step-end infinite; margin-left: 1px;
+    }
+    @keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* ── SVG signature underline ─────────────────── */
+    .sig-svg { width: 110px; height: 13px; vertical-align: middle; display: inline-block; margin-left: 2px; }
+    .sig-svg path { transition: stroke-dashoffset 1.5s cubic-bezier(.4,0,.4,1); }
+    .sig-svg.animate path { stroke-dashoffset: 0; }
+
+    /* ── Fireworks canvas ────────────────────────── */
+    #fireworksCanvas { position: fixed; inset: 0; pointer-events: none; display: none; z-index: 29; }
+
+    /* ── Exam timer warning ──────────────────────── */
+    #examTimerVal.timer-warn { color: var(--red); font-weight: 700; }
+
+    /* ── Épilogue ────────────────────────────────── */
+    .epilogue-overlay {
+      position: fixed; inset: 0; display: none; place-items: center;
+      background: radial-gradient(ellipse at center, rgba(255,220,230,.18) 0%, rgba(14,0,8,.75) 100%);
+      backdrop-filter: blur(16px); z-index: 36; padding: 18px;
+    }
+    .epilogue-overlay.show { display: grid; }
+    .epilogue-card {
+      width: min(400px, 90vw); background: var(--paper); border-radius: 4px;
+      padding: clamp(32px,6vw,52px); text-align: center;
+      box-shadow: 0 30px 80px rgba(0,0,0,.3); position: relative; overflow: hidden;
+    }
+    .epilogue-card::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(transparent,transparent 27px,var(--lines) 27px,var(--lines) 28px);
+      background-position: 0 54px; opacity: .18; pointer-events: none;
+    }
+    .epilogue-card > * { position: relative; }
+    .epilogue-heart { font-size: 50px; margin-bottom: 16px; display: block; animation: heartPulse 1.5s ease infinite; }
+    @keyframes heartPulse {
+      0%, 100% { transform: scale(1); }
+      14%       { transform: scale(1.2); }
+      28%       { transform: scale(1); }
+      42%       { transform: scale(1.1); }
+    }
+    .epilogue-title {
+      font-size: clamp(20px, 3.8vw, 28px); font-family: 'Caveat', cursive;
+      font-weight: 700; color: var(--pink); margin-bottom: 14px;
+    }
+    .epilogue-text {
+      font-size: clamp(15px, 2.6vw, 18px); font-family: 'Caveat', cursive;
+      line-height: 1.7; margin-bottom: 6px;
+    }
+    .epilogue-name {
+      font-size: clamp(14px, 2.3vw, 17px); font-family: 'Caveat', cursive;
+      font-weight: 600; opacity: .65; margin-top: 22px;
+    }
+    .epilogue-close-btn {
+      position: absolute; top: 12px; right: 14px;
+      background: none; border: none; font-size: 17px; cursor: pointer;
+      opacity: .3; transition: opacity .2s;
+    }
+    .epilogue-close-btn:hover { opacity: .65; }
   </style>
 </head>
 <body>
 
   <canvas id="confetti"></canvas>
+  <canvas id="fireworksCanvas"></canvas>
+  <div class="notif-banner" id="notifBanner">
+    <div class="notif-icon">💌</div>
+    <div class="notif-content">
+      <div class="notif-app">Université de mon Cœur</div>
+      <div class="notif-msg">Vous avez reçu un message de Matthieu 🥰</div>
+    </div>
+    <div class="notif-time">maintenant</div>
+  </div>
   <div class="hearts" id="hearts" aria-hidden="true"></div>
   <div class="toast" id="toast"></div>
   <button class="sound-btn" id="soundBtn" title="Son">🔊</button>
@@ -615,7 +709,7 @@
           <p>Bonne chance. <em style="font-size:.88em;opacity:.6;">(Meme si la chance n'a rien à voir avec le succès.)</em></p>
         </div>
         <div class="letter-sig">
-          Matthieu<br>
+          Matthieu<svg class="sig-svg" id="sigSvg" viewBox="0 0 120 14" aria-hidden="true"><path d="M2,10 C30,2 60,14 90,6 C108,1 116,12 118,9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="200" stroke-dashoffset="200"/></svg><br>
           <span style="font-size:.85em;opacity:.6;">l'ingé cyber le plus stock de France (autoproclamé) &nbsp;💪❤️</span>
         </div>
         <button class="letter-continue" id="letterContinue">Passer l'épreuve →</button>
@@ -676,6 +770,7 @@
           <div class="field"><span class="field-label">Matière :</span><span class="field-val">Sentiments Avancés &amp; Biceps</span></div>
           <div class="field"><span class="field-label">Coefficient :</span><span class="field-val">∞</span></div>
           <div class="field"><span class="field-label">Durée :</span><span class="field-val">jusqu'à ce que la mort nous sépare</span></div>
+          <div class="field"><span class="field-label">Temps écoulé :</span><span class="field-val" id="examTimerVal">00:00</span></div>
         </div>
 
         <hr class="sep">
@@ -699,6 +794,7 @@
             <li>Toute réponse B ou D est réputée nulle et éliminatoire. Le correcteur a déjà statué.</li>
             <li>L'usage de l'antisèche (en haut à droite) est toléré, voire fortement conseillé.</li>
             <li>Ce contrôle ne se récupère pas. Il n'y aura pas de session de rattrapage.</li>
+            <li>Tu peux aussi essayer de faire le cheat code Konami (je dis ça je dis rien).</li>
           </ul>
         </div>
 
@@ -838,10 +934,10 @@
         <div class="ch2-subtitle">Validé par le jury · Non optionnel · Coefficient ∞</div>
       </div>
       <ul class="ch2-list" id="ch2List">
-        <li><span class="ch2-check">✓</span><span>Un premier café qui ne ressemble plus à "entre potes"</span></li>
-        <li><span class="ch2-check">✓</span><span>Une session salle où elle me bat au deadlift (et je dis rien)</span></li>
-        <li><span class="ch2-check">✓</span><span>Des makis en mode couple (enfin)</span></li>
-        <li><span class="ch2-check">✓</span><span>La réviser sans faire semblant que c'est pas pour la voir</span></li>
+        <li><span class="ch2-check">✓</span><span>Notre premier café qui ne ressemble plus à "entre potes"</span></li>
+        <li><span class="ch2-check">✓</span><span>Une séance ou je me fais mog (encore)</span></li>
+        <li><span class="ch2-check">✓</span><span>Une balade à moto (avec mon sac à dos préféré)</span></li>
+        <li><span class="ch2-check">✓</span><span>Arreter de faire genre que je regarde pas nos photos h24</span></li>
         <li><span class="ch2-check">✓</span><span>Un premier voyage (à définir ensemble, de préférence avec une salle)</span></li>
         <li><span class="ch2-check">✓</span><span>Tout le reste qu'on n'a pas encore inventé 💖</span></li>
       </ul>
@@ -849,6 +945,18 @@
         <p>Le jury (Matthieu) a très hâte. 😌</p>
         <button class="ch2-btn" id="ch2Close">Je suis partante ! 🥰</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Épilogue -->
+  <div class="epilogue-overlay" id="epilogueOverlay">
+    <div class="epilogue-card" id="epilogueCard">
+      <button class="epilogue-close-btn" id="epilogueClose" aria-label="Fermer">✕</button>
+      <span class="epilogue-heart">💖</span>
+      <div class="epilogue-title">Voilà. C'est tout.</div>
+      <p class="epilogue-text">Je pouvais pas juste envoyer un message normal.</p>
+      <p class="epilogue-text">Faut croire que t'en valais la peine.</p>
+      <p class="epilogue-name">— Matthieu 💪❤️</p>
     </div>
   </div>
 
@@ -908,6 +1016,9 @@
     // ── Audio (Web Audio API) ─────────────────────
     let audioCtx;
     let soundOn = true;
+    let examTimerInterval = null;
+    let examStart = 0;
+    let fwAnimId = null;
 
     function getAudioCtx() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1125,10 +1236,81 @@
       gsap.set(paper, { y: 38, opacity: 0, rotation: -1 });
       gsap.to(paper, { y: 0, opacity: 1, rotation: 0, duration: 0.6, ease: 'back.out(1.4)', delay: 0.05 });
 
-      // Staggered line reveal — like reading a letter being written
-      const lines = paper.querySelectorAll('.letter-date, .letter-body p, .letter-sig, .letter-continue');
-      gsap.set(lines, { opacity: 0, y: 7 });
-      gsap.to(lines, { opacity: 1, y: 0, stagger: 0.09, duration: 0.32, delay: 0.55, ease: 'power2.out' });
+      const els       = Array.from(paper.querySelectorAll('.letter-date, .letter-body p, .letter-sig'));
+      const originals = els.map(el => el.innerHTML);
+      const continueBtn = document.getElementById('letterContinue');
+      continueBtn.style.opacity = '0';
+      continueBtn.style.pointerEvents = 'none';
+      els.forEach(el => { el.style.opacity = '0'; });
+
+      let cancelled = false;
+      const typerTimeouts = [];
+      let queueIdx = 0;
+
+      function finishAll() {
+        cancelled = true;
+        typerTimeouts.forEach(t => clearTimeout(t));
+        els.forEach((el, i) => { gsap.killTweensOf(el); el.innerHTML = originals[i]; el.style.opacity = '1'; });
+        const sv = document.getElementById('sigSvg');
+        if (sv) setTimeout(() => sv.classList.add('animate'), 80);
+        gsap.killTweensOf(continueBtn);
+        gsap.to(continueBtn, { opacity: 1, duration: 0.4 });
+        continueBtn.style.pointerEvents = '';
+      }
+      paper.addEventListener('dblclick', finishAll, { once: true });
+
+      function processNext() {
+        if (cancelled) return;
+        if (queueIdx >= els.length) {
+          const sv = document.getElementById('sigSvg');
+          if (sv) sv.classList.add('animate');
+          gsap.to(continueBtn, { opacity: 1, duration: 0.5 });
+          continueBtn.style.pointerEvents = '';
+          return;
+        }
+        const el       = els[queueIdx];
+        const origHTML = originals[queueIdx];
+        queueIdx++;
+        const rawText  = el.textContent;
+        const trimmed  = rawText.replace(/[\s\u00a0]/g, '');
+        const hasHTML  = /<[a-zA-Z]/.test(origHTML);
+        const isP      = el.tagName === 'P';
+
+        // Fade-in for: empty paragraphs, non-P elements, HTML-containing
+        if (!trimmed || !isP || hasHTML) {
+          el.innerHTML = origHTML;
+          gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.28, onComplete: () => {
+            const t = setTimeout(processNext, trimmed ? 100 : 40);
+            typerTimeouts.push(t);
+          }});
+          return;
+        }
+
+        // Typewriter for plain-text paragraphs
+        el.style.opacity = '1';
+        el.textContent   = '';
+        const cursor = document.createElement('span');
+        cursor.className = 'typing-cursor'; cursor.textContent = '|';
+        el.appendChild(cursor);
+        let charIdx = 0;
+        const chars = Array.from(rawText.trim());
+        const speed = chars.length > 60 ? 9 : 14;
+        function typeChar() {
+          if (cancelled) return;
+          if (charIdx < chars.length) {
+            cursor.before(document.createTextNode(chars[charIdx++]));
+            const t = setTimeout(typeChar, speed + Math.random() * 8);
+            typerTimeouts.push(t);
+          } else {
+            cursor.remove();
+            const t = setTimeout(processNext, 160);
+            typerTimeouts.push(t);
+          }
+        }
+        typeChar();
+      }
+      const t0 = setTimeout(processNext, 700);
+      typerTimeouts.push(t0);
     }
 
     document.getElementById('letterContinue').addEventListener('click', () => {
@@ -1189,6 +1371,22 @@
       gsap.fromTo('.option', { opacity: 0, x: -16 }, { opacity: 1, x: 0, stagger: 0.07, duration: 0.35, delay: 0.35 });
       setTimeout(() => document.getElementById('optA').focus(), 650);
       initExamParallax(paper);
+      // Live timer
+      examStart = Date.now();
+      clearInterval(examTimerInterval);
+      examTimerInterval = setInterval(() => {
+        const el = document.getElementById('examTimerVal');
+        if (!el) return;
+        const secs = Math.floor((Date.now() - examStart) / 1000);
+        const m = String(Math.floor(secs / 60)).padStart(2, '0');
+        const s = String(secs % 60).padStart(2, '0');
+        if (secs >= 300) {
+          el.textContent = '⚠️ ' + m + ':' + s;
+          el.classList.add('timer-warn');
+        } else {
+          el.textContent = m + ':' + s;
+        }
+      }, 1000);
     }
 
     // ── 3D parallax on exam paper ─────────────────
@@ -1441,6 +1639,8 @@
     function handleOui(isBlue, radioId) {
       document.getElementById(radioId).classList.add(isBlue ? 'fill-blue' : 'fill-pink');
       sndSuccess();
+      clearInterval(examTimerInterval); examTimerInterval = null;
+      launchFireworks();
       if (navigator.vibrate) navigator.vibrate([50, 50, 100, 50, 200]);
 
       // ── Cinematic OUI splash ──────────────────────
@@ -1507,7 +1707,7 @@
 
     document.getElementById('ch2Close').addEventListener('click', () => {
       gsap.to(document.getElementById('ch2Modal'), { y: -24, opacity: 0, duration: 0.28, ease: 'power2.in',
-        onComplete: () => ch2Overlay.classList.remove('show')
+        onComplete: () => { ch2Overlay.classList.remove('show'); setTimeout(showEpilogue, 600); }
       });
     });
 
@@ -1601,6 +1801,102 @@
       const t = e.touches[0];
       spawnTrailHeart(t.clientX, t.clientY);
     }, { passive: true });
+
+    // ── Fireworks ─────────────────────────────────
+    function launchFireworks() {
+      const fc = document.getElementById('fireworksCanvas');
+      fc.width = window.innerWidth; fc.height = window.innerHeight;
+      fc.style.display = 'block';
+      const ctx2 = fc.getContext('2d');
+      const rockets = [], sparks = [];
+      const palettes = [
+        ['#ff4f81','#ff8fab','#ffd6e7'],
+        ['#ffd700','#ffec6b','#fffde4'],
+        ['#60a5fa','#93c5fd','#dbeafe'],
+        ['#f97316','#fdba74','#fff'],
+        ['#a78bfa','#c4b5fd','#ede9fe'],
+      ];
+      function addRocket() {
+        const pal = palettes[Math.floor(Math.random() * palettes.length)];
+        rockets.push({
+          x: window.innerWidth * (0.12 + Math.random() * 0.76),
+          y: window.innerHeight,
+          vy: -(9 + Math.random() * 7), vx: (Math.random() - 0.5) * 1.4,
+          targetY: window.innerHeight * (0.08 + Math.random() * 0.45),
+          palette: pal, trail: [],
+        });
+      }
+      function burst(x, y, palette) {
+        const count = 44 + Math.floor(Math.random() * 18);
+        for (let i = 0; i < count; i++) {
+          const angle = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
+          const spd = 2.2 + Math.random() * 5.5;
+          sparks.push({ x, y, vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd,
+            alpha: 1, color: palette[Math.floor(Math.random() * palette.length)], size: 1.5 + Math.random() * 2.5 });
+        }
+        sparks.push({ x, y, vx: 0, vy: 0, alpha: 1, color: '#fff', size: 5 });
+      }
+      for (let i = 0; i < 8; i++) setTimeout(addRocket, i * 230 + Math.random() * 80);
+      function fwLoop() {
+        ctx2.clearRect(0, 0, fc.width, fc.height);
+        for (let i = rockets.length - 1; i >= 0; i--) {
+          const r = rockets[i];
+          r.trail.push({ x: r.x, y: r.y });
+          if (r.trail.length > 8) r.trail.shift();
+          for (let j = 0; j < r.trail.length; j++) {
+            ctx2.globalAlpha = (j / r.trail.length) * 0.65;
+            ctx2.fillStyle = r.palette[0];
+            ctx2.beginPath(); ctx2.arc(r.trail[j].x, r.trail[j].y, 1.5, 0, Math.PI * 2); ctx2.fill();
+          }
+          ctx2.globalAlpha = 1; ctx2.fillStyle = '#fff';
+          ctx2.beginPath(); ctx2.arc(r.x, r.y, 2.5, 0, Math.PI * 2); ctx2.fill();
+          r.x += r.vx; r.y += r.vy;
+          if (r.y <= r.targetY) { burst(r.x, r.y, r.palette); rockets.splice(i, 1); }
+        }
+        for (let i = sparks.length - 1; i >= 0; i--) {
+          const p = sparks[i];
+          p.x += p.vx; p.y += p.vy; p.vy += 0.09; p.vx *= 0.98; p.vy *= 0.98; p.alpha -= 0.022;
+          if (p.alpha <= 0) { sparks.splice(i, 1); continue; }
+          ctx2.globalAlpha = p.alpha; ctx2.fillStyle = p.color;
+          ctx2.beginPath(); ctx2.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx2.fill();
+        }
+        ctx2.globalAlpha = 1;
+        if (rockets.length || sparks.length) { fwAnimId = requestAnimationFrame(fwLoop); }
+        else { fc.style.display = 'none'; fwAnimId = null; }
+      }
+      fwAnimId = requestAnimationFrame(fwLoop);
+      setTimeout(() => { if (fwAnimId) { cancelAnimationFrame(fwAnimId); fwAnimId = null; fc.style.display = 'none'; } }, 4200);
+    }
+
+    // ── Épilogue ──────────────────────────────────
+    function showEpilogue() {
+      const epOverlay = document.getElementById('epilogueOverlay');
+      const epCard    = document.getElementById('epilogueCard');
+      epOverlay.classList.add('show');
+      gsap.set(epCard, { scale: 0.88, opacity: 0, y: 20 });
+      gsap.to(epCard,  { scale: 1, opacity: 1, y: 0, duration: 0.55, ease: 'back.out(1.5)' });
+      spawnConfetti(false);
+      if (!animId) confettiLoop();
+      confettiEl.classList.add('show');
+    }
+    document.getElementById('epilogueClose').addEventListener('click', () => {
+      const epCard = document.getElementById('epilogueCard');
+      gsap.to(epCard, { opacity: 0, y: -20, duration: 0.3, ease: 'power2.in',
+        onComplete: () => document.getElementById('epilogueOverlay').classList.remove('show')
+      });
+    });
+
+    // ── Notification banner intro ─────────────────
+    (function() {
+      const nb = document.getElementById('notifBanner');
+      gsap.set(nb, { y: -110, opacity: 0 });
+      gsap.to(nb, { y: 0, opacity: 1, duration: 0.55, ease: 'back.out(1.6)', delay: 0.6 });
+      setTimeout(() => {
+        gsap.to(nb, { y: -110, opacity: 0, duration: 0.42, ease: 'power2.in',
+          onComplete: () => { nb.style.display = 'none'; }
+        });
+      }, 3600);
+    })();
   </script>
 </body>
 </html>
