@@ -437,6 +437,102 @@
     }
     .win98-btn:focus { outline: 1px dotted #000; outline-offset: -4px; }
 
+    /* ── Chapitre 2 ─────────────────────────────── */
+    .ch2-overlay {
+      position: fixed; inset: 0; display: none; place-items: center;
+      background: rgba(20,0,12,.55); backdrop-filter: blur(10px);
+      padding: 18px; z-index: 35; overflow-y: auto;
+    }
+    .ch2-overlay.show { display: grid; }
+    .ch2-modal {
+      width: min(500px, 92vw); background: var(--paper); border-radius: 3px;
+      padding: clamp(24px,5vw,40px); box-shadow: 0 24px 72px rgba(0,0,0,.32);
+      position: relative; overflow: hidden; margin: 20px 0;
+    }
+    .ch2-modal::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(transparent,transparent 27px,var(--lines) 27px,var(--lines) 28px);
+      background-position: 0 52px; opacity: .28; pointer-events: none;
+    }
+    .ch2-modal > * { position: relative; }
+    .ch2-badge {
+      display: inline-block; background: var(--pink); color: #fff;
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; padding: 3px 10px; border-radius: 99px;
+      font-family: ui-sans-serif, sans-serif; margin-bottom: 10px;
+    }
+    .ch2-title {
+      font-size: clamp(18px, 3.5vw, 24px); font-weight: 700;
+      font-family: 'Caveat', cursive; margin-bottom: 4px; line-height: 1.2;
+    }
+    .ch2-subtitle { font-size: 11px; opacity: .45; font-style: italic; margin-bottom: 18px; font-family: ui-sans-serif, sans-serif; }
+    .ch2-list {
+      list-style: none; padding: 0; margin: 0 0 18px;
+      font-family: 'Caveat', cursive; font-size: clamp(15px, 2.5vw, 17px);
+      line-height: 1.1;
+    }
+    .ch2-list li {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,.07);
+      opacity: 0; transform: translateX(-12px);
+    }
+    .ch2-list li:last-child { border-bottom: none; }
+    .ch2-list li .ch2-check {
+      width: 18px; height: 18px; border: 2px solid var(--pink);
+      border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: var(--pink);
+    }
+    .ch2-footer { text-align: center; padding-top: 14px; border-top: 1px solid rgba(0,0,0,.1); }
+    .ch2-footer p { font-size: 12px; opacity: .5; margin-bottom: 12px; font-style: italic; }
+    .ch2-btn {
+      border: 0; border-radius: 999px; padding: 12px 32px;
+      font-size: 15px; font-weight: 800; cursor: pointer;
+      font-family: 'Caveat', cursive; color: #fff;
+      background: linear-gradient(180deg, var(--pink), var(--pink2));
+      box-shadow: 0 10px 28px rgba(255,79,129,.28);
+      border: 3px solid rgba(255,255,255,.85);
+      transition: filter .15s;
+    }
+    .ch2-btn:hover { filter: brightness(1.07); }
+
+    /* ── Konami easter egg ───────────────────────── */
+    .konami-overlay {
+      position: fixed; inset: 0; display: none; place-items: center;
+      background: rgba(0,0,0,.72); backdrop-filter: blur(6px);
+      z-index: 80; padding: 18px;
+    }
+    .konami-overlay.show { display: grid; }
+    .konami-box {
+      background: #0a0a1a; border: 2px solid var(--pink);
+      border-radius: 4px; padding: 32px 36px; width: min(380px, 90vw);
+      text-align: center; color: #fff;
+      box-shadow: 0 0 48px rgba(255,79,129,.25), inset 0 0 32px rgba(255,79,129,.04);
+    }
+    .konami-title {
+      font-size: clamp(20px,4vw,28px); font-weight: 900;
+      font-family: 'Caveat', cursive; color: var(--pink);
+      margin-bottom: 6px; letter-spacing: 1px;
+    }
+    .konami-subtitle { font-size: 11px; opacity: .45; font-family: ui-sans-serif, sans-serif; margin-bottom: 20px; }
+    .konami-stats {
+      list-style: none; margin: 0 0 18px; padding: 0;
+      font-family: 'Caveat', cursive; font-size: clamp(15px, 2.6vw, 18px);
+      text-align: left;
+    }
+    .konami-stats li { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .konami-stats li:last-child { border-bottom: none; }
+    .konami-stat-val { color: var(--pink); font-weight: 700; }
+    .konami-note { font-size: 12px; opacity: .5; font-style: italic; margin-bottom: 18px; font-family: ui-sans-serif, sans-serif; }
+    .konami-btn {
+      border: 2px solid var(--pink); border-radius: 99px;
+      background: transparent; color: var(--pink);
+      padding: 9px 24px; font-size: 14px; font-weight: 700;
+      font-family: 'Caveat', cursive; cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+    .konami-btn:hover { background: var(--pink); color: #fff; }
+
     /* ── OUI cinematic splash ───────────────────── */
     .oui-splash {
       position: fixed; inset: 0; display: none; place-items: center;
@@ -558,7 +654,7 @@
             <strong>📋 Antisèche</strong>
             (ne pas montrer au jury 🤫)<br><br>
             La réponse est <strong style="font-style:normal">OUI</strong>.<br>
-            Mais ça tu le savais déjà ça.<br>
+            Mais ça tu le savais déjà .<br>
             En meme temps je vois pas pourquoi tu douterais, c'est pas comme si t'avais le choix de toute façon, j'ai pris la décision pour nous deux.<br><br>
             <span class="antisec-close" id="antisecClose">Fermer ✕</span>
           </div>
@@ -733,6 +829,45 @@
     </div>
   </div>
 
+  <!-- Chapitre 2 -->
+  <div class="ch2-overlay" id="ch2Overlay">
+    <div class="ch2-modal" id="ch2Modal">
+      <div>
+        <span class="ch2-badge">Chapitre 2</span>
+        <div class="ch2-title">Le programme officiel 📋</div>
+        <div class="ch2-subtitle">Validé par le jury · Non optionnel · Coefficient ∞</div>
+      </div>
+      <ul class="ch2-list" id="ch2List">
+        <li><span class="ch2-check">✓</span><span>Un premier café qui ne ressemble plus à "entre potes"</span></li>
+        <li><span class="ch2-check">✓</span><span>Une session salle où elle me bat au deadlift (et je dis rien)</span></li>
+        <li><span class="ch2-check">✓</span><span>Des makis en mode couple (enfin)</span></li>
+        <li><span class="ch2-check">✓</span><span>La réviser sans faire semblant que c'est pas pour la voir</span></li>
+        <li><span class="ch2-check">✓</span><span>Un premier voyage (à définir ensemble, de préférence avec une salle)</span></li>
+        <li><span class="ch2-check">✓</span><span>Tout le reste qu'on n'a pas encore inventé 💖</span></li>
+      </ul>
+      <div class="ch2-footer">
+        <p>Le jury (Matthieu) a très hâte. 😌</p>
+        <button class="ch2-btn" id="ch2Close">Je suis partante ! 🥰</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Konami easter egg -->
+  <div class="konami-overlay" id="konamiOverlay">
+    <div class="konami-box" id="konamiBox">
+      <div class="konami-title">🎮 CHEAT CODE ACTIVÉ</div>
+      <div class="konami-subtitle">↑↑↓↓←→←→ B A · Konami Code détecté</div>
+      <ul class="konami-stats">
+        <li>Amour <span class="konami-stat-val">+100 ❤️</span> débloqué</li>
+        <li>Biceps symboliques <span class="konami-stat-val">+100 💪</span> crédités</li>
+        <li>Niveau <span class="konami-stat-val">"Petite copine"</span> accessible</li>
+        <li>Camaraderie fictive <span class="konami-stat-val">SUPPRIMÉE</span> du registre</li>
+      </ul>
+      <p class="konami-note">T'as trouvé ça toute seule ou t'as googlé ? 👀</p>
+      <button class="konami-btn" id="konamiClose">OK j'ai triché 😏</button>
+    </div>
+  </div>
+
   <!-- ══════════════════════════════════════════
        Windows 98 — Confirmation popup
   ══════════════════════════════════════════ -->
@@ -845,41 +980,56 @@
         const a = getAudioCtx();
         ambientGain = a.createGain();
         ambientGain.gain.setValueAtTime(0, a.currentTime);
-        ambientGain.gain.linearRampToValueAtTime(0.038, a.currentTime + 3);
+        ambientGain.gain.linearRampToValueAtTime(0.028, a.currentTime + 2.5);
         ambientGain.connect(a.destination);
 
-        // Gentle delay for space
-        const dly = a.createDelay(0.6); dly.delayTime.value = 0.32;
-        const dlyG = a.createGain();    dlyG.gain.value = 0.22;
-        ambientGain.connect(dly); dly.connect(dlyG); dlyG.connect(dly); dlyG.connect(a.destination);
-
-        // C major pentatonic melody at 68 BPM
-        const b = 60 / 68; // one beat duration in seconds
+        // Happy music-box / xylophone feel — C major, bouncy and bright
+        // Durations in seconds (fixed, not beat-based)
         const seq = [
-          [261.63,1],[329.63,.75],[392.00,.75],[329.63,.75],
-          [261.63,1.25],[220.00,.5],[261.63,.75],[329.63,.75],
-          [392.00,1],[523.25,.75],[392.00,.75],[329.63,1],
-          [261.63,2],
+          // Phrase 1 : ascending joy
+          [523.25,.38],[659.25,.28],[783.99,.28],[659.25,.22],[523.25,.46],[0,.14],
+          // Phrase 2 : playful turn
+          [587.33,.28],[698.46,.28],[783.99,.46],[698.46,.22],[587.33,.28],[523.25,.55],[0,.18],
+          // Phrase 3 : high point
+          [440.00,.28],[523.25,.28],[659.25,.28],[783.99,.55],[0,.18],
+          [698.46,.28],[659.25,.28],[587.33,.28],[523.25,.85],[0,.28],
+          // Phrase 4 : gentle resolution
+          [392.00,.28],[523.25,.28],[659.25,.46],[523.25,.28],[392.00,.55],[0,.2],
+          [329.63,.28],[392.00,.28],[523.25,1.1],[0,.55],
         ];
 
+        function pluck(freq, t, dur) {
+          const osc = a.createOscillator();
+          const g   = a.createGain();
+          // Triangle wave = bright, warm, not scary
+          osc.type = 'triangle'; osc.frequency.value = freq;
+          osc.connect(g); g.connect(ambientGain);
+          // Pluck envelope: instant attack, quick decay, soft tail
+          g.gain.setValueAtTime(0, t);
+          g.gain.linearRampToValueAtTime(1, t + 0.012);
+          g.gain.exponentialRampToValueAtTime(0.28, t + 0.07);
+          g.gain.setValueAtTime(0.28, t + dur * 0.55);
+          g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+          osc.start(t); osc.stop(t + dur + 0.02);
+
+          // Soft octave-up harmonic for sparkle
+          const osc2 = a.createOscillator();
+          const g2   = a.createGain();
+          osc2.type = 'sine'; osc2.frequency.value = freq * 2;
+          osc2.connect(g2); g2.connect(ambientGain);
+          g2.gain.setValueAtTime(0, t);
+          g2.gain.linearRampToValueAtTime(0.18, t + 0.012);
+          g2.gain.exponentialRampToValueAtTime(0.001, t + Math.min(0.18, dur * 0.4));
+          osc2.start(t); osc2.stop(t + 0.22);
+        }
+
         function playSeq() {
-          const now = a.currentTime + 0.12;
-          let t = now, total = 0;
-          for (const [freq, beats] of seq) {
-            const dur = beats * b;
-            const osc = a.createOscillator();
-            const g   = a.createGain();
-            osc.type = 'sine'; osc.frequency.value = freq;
-            osc.connect(g); g.connect(ambientGain);
-            g.gain.setValueAtTime(0, t);
-            g.gain.linearRampToValueAtTime(1, t + 0.06);
-            g.gain.exponentialRampToValueAtTime(0.42, t + Math.min(0.18, dur * 0.28));
-            g.gain.setValueAtTime(0.42, t + dur * 0.68);
-            g.gain.exponentialRampToValueAtTime(0.001, t + dur * 0.98);
-            osc.start(t); osc.stop(t + dur + 0.05);
+          let t = a.currentTime + 0.1, total = 0;
+          for (const [freq, dur] of seq) {
+            if (freq > 0) pluck(freq, t, dur);
             t += dur; total += dur;
           }
-          ambientTimer = setTimeout(playSeq, (total - 0.25) * 1000);
+          ambientTimer = setTimeout(playSeq, (total - 0.3) * 1000);
         }
         playSeq();
       } catch(e) {}
@@ -1186,7 +1336,7 @@
     ];
     const nonNotes = [
       '↳ Réponse incorrecte · 0/20. Le correcteur a déjà statué. 😬',
-      '↳ Toujours faux. On te l\'avait prévenu. Résultat : éliminatoire.',
+      '↳ Toujours faux. Fais un effort Merde !  Résultat : Essaye encore.',
       '↳ 3ème tentative notée. Signalement au jury en cours…',
       '↳ Les bonnes réponses sont évidentes et je ne suis pas achetable ! (sauf si je peux manger des makis sur tes biceps) 🙏',
     ];
@@ -1342,8 +1492,59 @@
     document.getElementById('optA').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleOui(false, 'radioA'); } });
     document.getElementById('optC').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleOui(true,  'radioC'); } });
 
-    document.getElementById('btnClose').addEventListener('click', () => overlay.classList.remove('show'));
-    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('show'); });
+    // ── Chapitre 2 ────────────────────────────────
+    const ch2Overlay = document.getElementById('ch2Overlay');
+
+    function showChapitre2() {
+      ch2Overlay.classList.add('show');
+      const modal = document.getElementById('ch2Modal');
+      gsap.set(modal, { y: 40, opacity: 0 });
+      gsap.to(modal, { y: 0, opacity: 1, duration: 0.5, ease: 'back.out(1.5)' });
+
+      const items = document.querySelectorAll('#ch2List li');
+      items.forEach((li, i) => gsap.to(li, { opacity: 1, x: 0, duration: 0.35, delay: 0.35 + i * 0.12, ease: 'power2.out' }));
+    }
+
+    document.getElementById('ch2Close').addEventListener('click', () => {
+      gsap.to(document.getElementById('ch2Modal'), { y: -24, opacity: 0, duration: 0.28, ease: 'power2.in',
+        onComplete: () => ch2Overlay.classList.remove('show')
+      });
+    });
+
+    document.getElementById('btnClose').addEventListener('click', () => {
+      overlay.classList.remove('show');
+      setTimeout(showChapitre2, 500);
+    });
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) { overlay.classList.remove('show'); setTimeout(showChapitre2, 500); }
+    });
+
+    // ── Konami code easter egg ─────────────────────
+    const konamiOverlay = document.getElementById('konamiOverlay');
+    const konamiSeq = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let konamiIdx = 0;
+
+    document.addEventListener('keydown', e => {
+      if (e.key === konamiSeq[konamiIdx]) {
+        konamiIdx++;
+        if (konamiIdx === konamiSeq.length) {
+          konamiIdx = 0;
+          konamiOverlay.classList.add('show');
+          const box = document.getElementById('konamiBox');
+          gsap.set(box, { scale: 0.7, opacity: 0 });
+          gsap.to(box, { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(2)' });
+          sndSuccess();
+        }
+      } else {
+        konamiIdx = 0;
+      }
+    });
+
+    document.getElementById('konamiClose').addEventListener('click', () => {
+      gsap.to(document.getElementById('konamiBox'), { scale: 0.85, opacity: 0, duration: 0.22, ease: 'power2.in',
+        onComplete: () => konamiOverlay.classList.remove('show')
+      });
+    });
 
     // ── Photo box easter egg ──────────────────────
     let photoClicks = 0;
