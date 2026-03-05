@@ -4,6 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>📬 Lucie — Convocation urgente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg1: #fde8d8; --bg2: #f0c4a8;
@@ -127,19 +130,19 @@
       background-position: 0 62px;
     }
     .letter-date {
-      font-size: 11px; font-family: ui-sans-serif, sans-serif;
-      opacity: .4; margin-bottom: 18px; letter-spacing: .5px;
+      font-size: 13px; font-family: 'Caveat', cursive;
+      opacity: .5; margin-bottom: 18px; letter-spacing: .3px;
     }
     .letter-body {
-      font-family: Georgia, ui-serif, serif; font-style: italic;
-      font-size: clamp(13px, 1.9vw, 15px); line-height: 28px;
+      font-family: 'Caveat', cursive;
+      font-size: clamp(17px, 2.6vw, 20px); line-height: 28px;
       color: var(--ink);
     }
     .letter-body p { margin-bottom: 0; }
     .letter-sig {
-      text-align: right; margin-top: 24px; font-style: italic;
-      opacity: .75; line-height: 28px; font-family: Georgia, ui-serif, serif;
-      font-size: clamp(13px, 1.9vw, 15px);
+      text-align: right; margin-top: 24px;
+      opacity: .78; line-height: 28px; font-family: 'Caveat', cursive;
+      font-size: clamp(16px, 2.4vw, 19px); font-weight: 600;
     }
     .letter-continue {
       display: block; margin: 28px auto 0;
@@ -205,7 +208,10 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 9px; opacity: .38; text-align: center; line-height: 1.4;
       font-family: ui-sans-serif, sans-serif;
+      cursor: pointer; transition: opacity .2s, border-color .2s;
+      -webkit-tap-highlight-color: transparent;
     }
+    .photo-box:hover { opacity: .6; border-color: var(--pink); }
     .exam-meta { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 11.5px; margin-bottom: 12px; font-family: ui-sans-serif, sans-serif; }
     .field { display: flex; gap: 5px; align-items: baseline; }
     .field-label { opacity: .5; }
@@ -431,6 +437,24 @@
     }
     .win98-btn:focus { outline: 1px dotted #000; outline-offset: -4px; }
 
+    /* ── OUI cinematic splash ───────────────────── */
+    .oui-splash {
+      position: fixed; inset: 0; display: none; place-items: center;
+      z-index: 28; pointer-events: none;
+    }
+    .oui-splash.show { display: grid; }
+    .oui-splash-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, rgba(255,255,255,.97) 0%, rgba(255,79,129,.08) 100%);
+    }
+    .oui-splash-text {
+      position: relative; z-index: 1;
+      font-size: clamp(60px, 15vw, 128px); font-weight: 900;
+      font-family: 'Caveat', cursive;
+      text-align: center; user-select: none; line-height: 1;
+      filter: drop-shadow(0 6px 32px rgba(255,79,129,.22));
+    }
+
     /* ── Cursor heart trail ──────────────────────── */
     .cursor-heart {
       position: fixed; pointer-events: none; z-index: 1000;
@@ -547,7 +571,7 @@
             <strong>Université de mon Cœur</strong>
             <span>FAC de mes sentiments &nbsp;·&nbsp; Session Printemps 2026</span>
           </div>
-          <div class="photo-box">PHOTO<br>D'IDEN­TITÉ</div>
+          <div class="photo-box" id="photoBox" role="button" tabindex="0" title="?">PHOTO<br>D'IDEN­TITÉ</div>
         </div>
 
         <!-- Infos -->
@@ -594,12 +618,12 @@
           <div class="reglement-body" id="reglementBody">
             <div class="reglement-content">
               <p><strong>Art. 1</strong> : Le présent règlement s'applique à toute épreuve sentimentale de coefficient infini, sans exception, y compris les jours de compétition.</p>
-              <p><strong>Art. 3</strong> :Tout sentiment non exprimé dans les délais impartis est soumis à une majoration de 20% d'attentes non formulées, à la charge exclusive du jury.</p>
-              <p><strong>Art. 7</strong> :Les biceps constituent un argument juridique recevable dans le présent établissement, sous réserve que leur propriétaire soit également Matthieu.</p>
-              <p><strong>Art. 12</strong> :La « camaraderie fictive » est par la présente officiellement dissoute. Toute tentative de la maintenir sera traitée comme une fraude académique de premier degré.</p>
-              <p><strong>Art. 15</strong> :Le jury (Matthieu) se réserve le droit de faire des tractions en cas de réponse correcte, à titre de célébration institutionnelle.</p>
-              <p><strong>Art. 18</strong> :En cas de réponse B ou D répétée, l'étudiante sera conviée à un entretien individuel non optionnel portant sur ses choix de vie et son niveau d'auto-sabotage.</p>
-              <p><strong>Art. 23</strong> :Le présent règlement prévaut sur toute notion de logique, de doute ou de mauvaise foi. Le jury a toujours raison. Sauf s'il a tort, auquel cas il ira à la salle.</p>
+              <p><strong>Art. 3</strong> : Tout sentiment non exprimé dans les délais impartis est soumis à une majoration de 20% d'attentes non formulées, à la charge exclusive du jury.</p>
+              <p><strong>Art. 7</strong> : Les biceps constituent un argument juridique recevable dans le présent établissement, sous réserve que leur propriétaire soit également Matthieu.</p>
+              <p><strong>Art. 12</strong> : La « camaraderie fictive » est par la présente officiellement dissoute. Toute tentative de la maintenir sera traitée comme une fraude académique de premier degré.</p>
+              <p><strong>Art. 15</strong> : Le jury (Matthieu) se réserve le droit de faire des tractions en cas de réponse correcte, à titre de célébration institutionnelle.</p>
+              <p><strong>Art. 18</strong> : En cas de réponse B ou D répétée, l'étudiante sera conviée à un entretien individuel non optionnel portant sur ses choix de vie et son niveau d'auto-sabotage.</p>
+              <p><strong>Art. 23</strong> : Le présent règlement prévaut sur toute notion de logique, de doute ou de mauvaise foi. Le jury a toujours raison. Sauf s'il a tort, auquel cas il ira à la salle.</p>
             </div>
           </div>
         </div>
@@ -657,6 +681,12 @@
 
       </div>
     </div>
+  </div>
+
+  <!-- OUI splash -->
+  <div class="oui-splash" id="ouiSplash" aria-hidden="true">
+    <div class="oui-splash-bg"></div>
+    <div class="oui-splash-text" id="ouiSplashText">OUI ! 💖</div>
   </div>
 
   <!-- ══════════════════════════════════════════
@@ -804,9 +834,74 @@
       });
     }
 
+    // ── Ambient music ─────────────────────────────
+    let ambientGain  = null;
+    let ambientTimer = null;
+    let ambientReady = false; // true once envelope opened
+
+    function startAmbientMusic() {
+      if (!soundOn || ambientGain) return;
+      try {
+        const a = getAudioCtx();
+        ambientGain = a.createGain();
+        ambientGain.gain.setValueAtTime(0, a.currentTime);
+        ambientGain.gain.linearRampToValueAtTime(0.038, a.currentTime + 3);
+        ambientGain.connect(a.destination);
+
+        // Gentle delay for space
+        const dly = a.createDelay(0.6); dly.delayTime.value = 0.32;
+        const dlyG = a.createGain();    dlyG.gain.value = 0.22;
+        ambientGain.connect(dly); dly.connect(dlyG); dlyG.connect(dly); dlyG.connect(a.destination);
+
+        // C major pentatonic melody at 68 BPM
+        const b = 60 / 68; // one beat duration in seconds
+        const seq = [
+          [261.63,1],[329.63,.75],[392.00,.75],[329.63,.75],
+          [261.63,1.25],[220.00,.5],[261.63,.75],[329.63,.75],
+          [392.00,1],[523.25,.75],[392.00,.75],[329.63,1],
+          [261.63,2],
+        ];
+
+        function playSeq() {
+          const now = a.currentTime + 0.12;
+          let t = now, total = 0;
+          for (const [freq, beats] of seq) {
+            const dur = beats * b;
+            const osc = a.createOscillator();
+            const g   = a.createGain();
+            osc.type = 'sine'; osc.frequency.value = freq;
+            osc.connect(g); g.connect(ambientGain);
+            g.gain.setValueAtTime(0, t);
+            g.gain.linearRampToValueAtTime(1, t + 0.06);
+            g.gain.exponentialRampToValueAtTime(0.42, t + Math.min(0.18, dur * 0.28));
+            g.gain.setValueAtTime(0.42, t + dur * 0.68);
+            g.gain.exponentialRampToValueAtTime(0.001, t + dur * 0.98);
+            osc.start(t); osc.stop(t + dur + 0.05);
+            t += dur; total += dur;
+          }
+          ambientTimer = setTimeout(playSeq, (total - 0.25) * 1000);
+        }
+        playSeq();
+      } catch(e) {}
+    }
+
+    function stopAmbientMusic() {
+      clearTimeout(ambientTimer); ambientTimer = null;
+      if (ambientGain) {
+        try {
+          const a = getAudioCtx();
+          ambientGain.gain.setValueAtTime(ambientGain.gain.value, a.currentTime);
+          ambientGain.gain.linearRampToValueAtTime(0, a.currentTime + 0.6);
+        } catch(e) {}
+        ambientGain = null;
+      }
+    }
+
     document.getElementById('soundBtn').addEventListener('click', () => {
       soundOn = !soundOn;
       document.getElementById('soundBtn').textContent = soundOn ? '🔊' : '🔇';
+      if (!soundOn) stopAmbientMusic();
+      else if (ambientReady) startAmbientMusic();
     });
 
     // ── Floating hearts ───────────────────────────
@@ -858,6 +953,8 @@
       envelope.style.pointerEvents = 'none';
       sndRustle();
       floatTween.kill();
+      ambientReady = true;
+      startAmbientMusic();
 
       const tl = gsap.timeline();
       tl.to('#envSeal',  { scale: 1.9, opacity: 0, duration: 0.22, ease: 'power2.in' });
@@ -941,6 +1038,33 @@
       gsap.to(paper, { y: 0, opacity: 1, duration: 0.55, ease: 'back.out(1.4)', delay: 0.05 });
       gsap.fromTo('.option', { opacity: 0, x: -16 }, { opacity: 1, x: 0, stagger: 0.07, duration: 0.35, delay: 0.35 });
       setTimeout(() => document.getElementById('optA').focus(), 650);
+      initExamParallax(paper);
+    }
+
+    // ── 3D parallax on exam paper ─────────────────
+    function initExamParallax(paper) {
+      const onMove = e => {
+        if (!pageQuestion.classList.contains('active')) return;
+        const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+        const dx = (e.clientX - cx) / cx * 3.8;
+        const dy = (e.clientY - cy) / cy * 2.6;
+        gsap.to(paper, { rotateY: dx, rotateX: -dy, duration: 1.5, ease: 'power2.out', transformPerspective: 1100 });
+      };
+      const onLeave = () => {
+        gsap.to(paper, { rotateY: 0, rotateX: 0, duration: 2, ease: 'power2.out' });
+      };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseleave', onLeave);
+
+      // Mobile gyroscope
+      if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientation', e => {
+          if (!pageQuestion.classList.contains('active')) return;
+          const rx = Math.max(-2.8, Math.min(2.8,  (e.gamma || 0) / 10));
+          const ry = Math.max(-2,   Math.min(2,   -(e.beta  - 45 || 0) / 14));
+          gsap.to(paper, { rotateY: rx, rotateX: ry, duration: 0.9, ease: 'power2.out', transformPerspective: 1100 });
+        });
+      }
     }
 
     // ── Antisèche ─────────────────────────────────
@@ -1169,6 +1293,23 @@
       sndSuccess();
       if (navigator.vibrate) navigator.vibrate([50, 50, 100, 50, 200]);
 
+      // ── Cinematic OUI splash ──────────────────────
+      const splash     = document.getElementById('ouiSplash');
+      const splashText = document.getElementById('ouiSplashText');
+      splashText.textContent = isBlue ? 'OUI ! 💙' : 'OUI ! 💖';
+      splashText.style.color = isBlue ? '#2563eb' : 'var(--pink)';
+      splash.classList.add('show');
+
+      gsap.set(splashText, { scale: 0.15, opacity: 0, rotation: -10 });
+      gsap.to(splashText,  { scale: 1, opacity: 1, rotation: 0, duration: 0.5, ease: 'back.out(2.2)' });
+      gsap.to(splashText,  { scale: 1.08, duration: 0.22, delay: 0.55, ease: 'power1.inOut', yoyo: true, repeat: 1 });
+      setTimeout(() => {
+        gsap.to(splash, { opacity: 0, duration: 0.5, ease: 'power2.in',
+          onComplete: () => { splash.classList.remove('show'); gsap.set(splash, { opacity: 1 }); }
+        });
+      }, 950);
+
+      // ── Bulletin (delayed to let splash breathe) ──
       setTimeout(() => {
         const stamp2  = document.getElementById('admisStamp');
         const btn     = document.getElementById('btnClose');
@@ -1193,7 +1334,7 @@
         spawnConfetti(isBlue);
         if (!animId) confettiLoop();
         for (let i = 0; i < 16; i++) setTimeout(makeHeart, i * 70);
-      }, 380);
+      }, 920);
     }
 
     document.getElementById('optA').addEventListener('click', () => handleOui(false, 'radioA'));
@@ -1203,6 +1344,32 @@
 
     document.getElementById('btnClose').addEventListener('click', () => overlay.classList.remove('show'));
     overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('show'); });
+
+    // ── Photo box easter egg ──────────────────────
+    let photoClicks = 0;
+    const photoBox = document.getElementById('photoBox');
+    const photoMsgs = [
+      '📷 Photo non fournie.',
+      '📷 Toujours pas de photo. Insistance détectée.',
+      null, // triggers reveal
+    ];
+    photoBox.addEventListener('click', () => {
+      photoClicks++;
+      if (photoClicks < 3) {
+        showToast(photoMsgs[photoClicks - 1]);
+        gsap.fromTo(photoBox, { rotation: -4 }, { rotation: 0, duration: 0.4, ease: 'elastic.out(1.4, 0.5)' });
+        return;
+      }
+      photoClicks = 0;
+      // Flip the box to reveal a heart message
+      gsap.to(photoBox, { rotateY: 90, duration: 0.22, ease: 'power2.in', onComplete: () => {
+        photoBox.style.fontSize = '22px';
+        photoBox.style.lineHeight = '1';
+        photoBox.innerHTML = '❤️<br><span style="font-size:7px;line-height:1.4;display:block;opacity:.6">Pour Lucie</span>';
+        gsap.fromTo(photoBox, { rotateY: -90 }, { rotateY: 0, duration: 0.3, ease: 'back.out(1.8)' });
+      }});
+      showToast('📸 Photo retrouvée dans les archives sentimentales. 🥰');
+    });
 
     // ── Cursor heart trail ────────────────────────
     const trailEmojis = ['❤️','💕','💖','✨','💗','🌸'];
